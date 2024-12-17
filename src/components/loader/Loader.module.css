@@ -1,0 +1,40 @@
+.loader35 {
+    margin: 0 0.5em;
+    position: relative;
+    width: 4em;
+    height: 4em;
+}
+.loader35::before {
+    border-radius: 50%;
+    background-color: #000;
+    animation: loader35 3s cubic-bezier(0.77, 0, 0.175, 1) infinite;
+    content: '';
+    width: inherit;
+    height: inherit;
+    top: 0;
+    left: 0;
+    position: absolute;
+}
+@keyframes loader35 {
+    0% {
+        transform: translateX(0) scale(1);
+    }
+    25% {
+        transform: translateX(-100%) scale(0.3);
+    }
+    50% {
+        transform: translateX(0) scale(1);
+    }
+    75% {
+        transform: translateX(100%) scale(0.3);
+    }
+    100% {
+        transform: translateX(0) scale(1);
+    }
+}
+.box {
+    display: flex;
+    min-height: 100vh;
+    align-items: center;
+    justify-content: center;
+}

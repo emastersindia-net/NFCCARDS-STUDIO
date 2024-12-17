@@ -1,0 +1,53 @@
+.selectorContainer {
+    min-width: 250px;
+    position: relative;
+}
+.selectorText {
+    display: block;
+    padding: 5px 12px;
+}
+.selectorDropdown {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    padding: 5px;
+    box-shadow: 0 0 10px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.4s ease-in-out;
+}
+.selectorDropdown.show {
+    opacity: 1;
+    visibility: visible;
+}
+.selectorSearch {
+    width: 100%;
+    height: 40px;
+    padding: 0 17px;
+    border: 1px solid #000;
+    color: #000;
+    font-family: 'AdobeClean-Regular';
+    border-radius: 5px;
+    outline: none;
+    margin-bottom: 20px;
+}
+.dropdownList {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    max-height: 360px;
+    overflow: auto;
+}
+.dropdownList li {
+    padding: 12px 5px;
+    transition: 0.3s ease-in-out;
+    cursor: pointer;
+    border-radius: 5px;
+}
+.dropdownList li:hover {
+    background-color: #000;
+    color: #fff;
+}

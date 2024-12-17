@@ -1,0 +1,417 @@
+.editorWrapper {
+    display: flex;
+    position: relative;
+    min-height: 100vh;
+    align-items: center;
+    justify-content: center;
+}
+.editorArea {
+    width: 1050px;
+    height: 600px;
+    box-shadow: 0 0 32px 32px rgba(0,0,0,0.08);
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border-radius: 10px;
+}
+.bleedText {
+    font-size: 12px;
+    font-family: 'AdobeClean-Regular';
+    position: absolute;
+    bottom: -60px;
+    left: 20px;
+    color: #dc2f2f;
+}
+.bleedText::before {
+    content: "";
+    width: 1px;
+    height: 43px;
+    background-color: #dc2f2f;
+    border: 1px solid #dc2f2f;
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.editorSafeArea {
+    width: 1008px;
+    height: 558px;
+    position: relative;
+}
+.safeAreaText {
+    font-size: 12px;
+    font-family: 'AdobeClean-Regular';
+    position: absolute;
+    top: -60px;
+    left: 0;
+    color: #42b883;
+    user-select: none;
+}
+.safeAreaText::before {
+    content: "";
+    width: 1px;
+    height: 44px;
+    background-color: #42b883;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.safeAreaGuide {
+    position: absolute;
+    background-color: #42b883;
+    z-index: 4;
+}
+.safeAreaGuide.left {
+    width: 1px;
+    height: 100%;
+    top: 0;
+    left: 0;
+}
+.safeAreaGuide.left::before, .safeAreaGuide.right::before {
+    content: "";
+    background-color: #7c73e6;
+    width: 21px;
+    height: 1px;
+    position: absolute;
+    right: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.safeAreaGuide.right::before {
+    right: inherit;
+    left: 100%;
+}
+.safeAreaGuide.top::before, .safeAreaGuide.bottom::before {
+    content: "";
+    background-color: #7c73e6;
+    width: 1px;
+    height: 21px;
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+}
+.safeAreaGuide.bottom::before {
+    top: 100%;
+    bottom: inherit;
+}
+.safeAreaGuide.right {
+    width: 1px;
+    height: 100%;
+    top: 0;
+    right: 0;
+}
+.safeAreaGuide.top, .safeAreaGuide.bottom {
+    width: 100%;
+    height: 1px;
+    top: 0;
+    left: 0;
+}
+.safeAreaGuide.bottom {
+    top: inherit;
+    bottom: 0;
+}
+.node {
+    /* padding: 12px 5px; */
+    padding: 12px 0;
+    position: absolute;
+    border: 1px solid transparent;
+}
+.nodeText {
+    user-select: none;
+}
+.node.selected {
+    border-color: #7c73e6;
+}
+.corners {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    background-color: #7c73e6;
+    border-radius: 100%;
+    position: absolute;
+    opacity: 0;
+    z-index: 1;
+}
+.node.selected .corners, .node.selected .resizer {
+    opacity: 1;
+}
+.corners.top {
+    top: -5px;
+}
+.corners.left {
+    left: -5px;
+}
+.corners.bottom {
+    bottom: -5px;
+}
+.corners.right {
+    right: -5px;
+}
+.resizer {
+    position: absolute;
+    width: 4px;
+    height: 20px;
+    background-color: #6643b5;
+    border-radius: 60px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0;
+    cursor: e-resize;
+}
+.resizer.left {
+    left: -3px;
+}
+.resizer.right {
+    right: -3px;
+}
+.nodeDelte {
+    position: absolute;
+    bottom: 50%;
+    transform: translateY(50%);
+    right: -38px;
+    background-color: #dc2f2f;
+    color: #fff;
+    border-radius: 100%;
+    outline: none;
+    border: none;
+    display: inline-flex;
+    width: 30px;
+    height: 30px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    padding-left: 1px;
+    opacity: 0;
+    visibility: hidden;
+    z-index: 100;
+}
+.nodeLock {
+    position: absolute;
+    top: 100%;
+    left: 100%;
+    margin-left: 5px;
+    z-index: 10;
+    background-color: #ddd;
+    color: #000;
+    border: none;
+    outline: none;
+    display: inline-flex;
+    width: 30px;
+    height: 30px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 100%;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+}
+.textContentEditor {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    background-color: #fff;
+    padding: 8px 12px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px 12px rgba(0,0,0,0.08);
+    min-width: 300px;
+    opacity: 0;
+    visibility: hidden;
+    z-index: 10;
+}
+.textContentEditor.show {
+    opacity: 1;
+    visibility: visible;
+}
+.textContentInput {
+    width: 100%;
+    height: 37px;
+    padding: 0 17px;
+    border: 1px solid #000;
+    color: #000;
+    font-family: 'AdobeClean-Regular';
+    outline: none;
+    font-size: 18px;
+    border-radius: 5px;
+}
+.node.selected .nodeDelte, .node.selected .nodeLock {
+    opacity: 1;
+    visibility: visible;
+}
+.switch {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 10px;
+    gap: 10px;
+}
+.switchText {
+    font-size: 16px;
+    font-family: 'AdobeClean-Bold';
+}
+.switchContainer {
+    display: inline-flex;
+    width: 120px;
+    height: 40px;
+    background-color: #ddd;
+    border-radius: 60px;
+    padding: 10px;
+    cursor: pointer;
+}
+.switchContent {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+.switchBtn {
+    position: absolute;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-color: #fff;
+    border-radius: 100%;
+    box-shadow: 2px 3px 5px 6px rgba(0,0,0,0.04);
+    top: 0;
+    left: 0;
+    transition: 0.3s ease-in-out;
+}
+.switchBtn.active {
+    left: inherit;
+    right: 0;
+}
+#editorAreaFront::after {
+    content: 'Front';
+    position: absolute;
+    bottom: 100%;
+    right: 5px;
+    margin-bottom: 5px;
+    font-family: 'AdobeClean-Bold';
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+#editorAreaBack::after {
+    content: 'Back';
+    position: absolute;
+    bottom: 100%;
+    right: 5px;
+    margin-bottom: 5px;
+    font-family: 'AdobeClean-Bold';
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+.nodeImage, .nodeShape {
+    padding: 0px !important;
+}
+.imageResizer {
+    width: 20px;
+    height: 20px;
+    bottom: -10px !important;
+    right: -10px !important;
+    cursor: se-resize;
+    border-radius: 5px;
+    background-color: #ff7e67;
+}
+.safeAreaGuideLine {
+    position: absolute;
+    background-color: #dc2f2f;
+    opacity: 0;
+    z-index: 4;
+}
+.safeAreaGuideLine.left {
+    width: 1px;
+    height: 100%;
+    top: 0;
+    left: 21px;
+}
+.safeAreaGuideLine.top {
+    width: 100%;
+    height: 1px;
+    top: 21px;
+    left: 0;
+}
+.safeAreaGuideLine.right {
+    width: 1px;
+    height: 100%;
+    top: 0;
+    right: 21px;
+}
+.safeAreaGuideLine.bottom {
+    width: 100%;
+    height: 1px;
+    bottom: 21px;
+    left: 0;
+}
+.safeAreaGuideLine.center {
+    width: 1px;
+    height: 100%;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.safeAreaGuideLine.middle {
+    width: 100%;
+    height: 1px;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+}
+.imageEditor {
+    width: 120px;
+    height: 120px;
+    display: block;
+    position: relative;
+    margin: 0 auto;
+}
+.uploadedImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.uploadImage {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    z-index: 10;
+}
+.contextMenuWrapper {
+    position: fixed;
+    background-color: #fff;
+    box-shadow: 0px 0px 10px 12px rgba(0,0,0,0.08);
+    z-index: 100;
+    border-radius: 10px;
+    display: none;
+}
+.contextMenuWrapper.show {
+    display: block;
+}
+.contextMenu {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    gap: 5px;
+}
+.contextBtn {
+    background-color: transparent;
+    display: inline-flex;
+    padding: 12px 24px;
+    font-size: 15px;
+    font-family: "AdobeClean-Bold";
+    border: none;
+    outline: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+.contextBtn:hover {
+    background-color: #eee;
+}

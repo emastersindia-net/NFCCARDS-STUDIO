@@ -1,0 +1,77 @@
+.textControllerWrapper {
+    padding-top: 149px;
+    padding-left: 17px;
+    padding-right: 17px;
+}
+.textBox {
+    display: flex;
+    padding: 24px;
+    flex-direction: column;
+    background-color: #fff;
+    box-shadow: 0px 0px 20px 10px rgba(0,0,0,0.08);
+    border-radius: 10px;
+    min-height: 400px;
+}
+.textHeading h1 {
+    font-size: 20px;
+    font-family: 'AdobeClean-Bold';
+    margin: 0;
+    padding-bottom: 15px;
+}
+.textHeading p {
+    font-size: 14px;
+    line-height: 20px;
+    color: #9f9f9f;
+    font-family: 'AdobeClean-Regular';
+    margin: 0;
+    padding-bottom: 20px;
+}
+.textBody {
+    flex-grow: 1;
+}
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -2px;
+}
+.col {
+    flex: 0 0 auto;
+    max-width: 100%;
+    width: 50%;
+    padding: 0 2px;
+}
+.shapeBox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 5px 5px;
+    background-color: #eee;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 2px;
+}
+.squareIcon {
+    width: 25px;
+    height: 25px;
+    background-color: #fff;
+    border: 1px solid #000;
+}
+.shapeName {
+    font-family: "AdobeClean-Bold";
+    font-size: 16px;
+    margin-top: 10px;
+}
+.recIcon {
+    width: 40px;
+    height: 25px;
+    background-color: #fff;
+    border: 1px solid #000;
+}
+.circleIcon {
+    width: 25px;
+    height: 25px;
+    border-radius: 100%;
+    background-color: #fff;
+    border: 1px solid #000;
+}

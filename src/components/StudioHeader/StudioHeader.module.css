@@ -1,0 +1,66 @@
+.headerWrapper {
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background-color: #ffffff;
+    border-bottom: 1px solid #d3d3d3;
+    z-index: 100;
+}
+.navbarWrapper {
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.navbarColumn {
+    display: flex;
+    align-items: center;
+}
+.navbarBrand {
+    display: inline-block;
+    width: 47px;
+    margin-right: 20px;
+}
+.navbarBrand img {
+    max-width: 100%;
+}
+.navbarFilename {
+    width: 400px;
+
+}
+.navbarFilename input {
+    width: 100%;
+    height: 37px;
+    border: 1px solid #000;
+    font-family: "AdobeClean-Regular";
+    padding: 0 17px;
+    outline: none;
+    border-radius: 10px;
+}
+.btns {
+    display: flex;
+    gap: 5px;
+    margin-left: 10px;
+}
+.btns button {
+    background-color: #000;
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px;
+    min-height: 37px;
+    min-width: 100px;
+    border: 1px solid #000;
+    outline: none;
+    font-family: "AdobeClean-Bold";
+    gap: 5px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+}
+.btns button:hover {
+    background-color: #fff;
+    color: #000;
+}
