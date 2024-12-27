@@ -1,8 +1,9 @@
 import styles from './MagicTextController.module.css'
 import placeholder from '../../assets/images/placeholder-image.jpg'
 import { useDispatch } from 'react-redux'
-import { addCompanylogoNode, addMagicContact, changeCompanyLogoforMagicText, changeCompanyNameforMagicText, changeIconofMagicText } from '../../utils/nodeSclice'
+import { addCompanylogoNode, addIconText, addImageToLogoText, addLogoText, addMagicContact, changeCompanyLogoforMagicText, changeCompanyNameforMagicText, changeIcon, changeIconofMagicText, nodeTextUpdate } from '../../utils/nodeSclice'
 import { useState } from 'react'
+import { baseurl } from '../../config/apiUrl'
 
 const iconData = [
     {
@@ -73,14 +74,18 @@ const iconData = [
     }
 ]
 
-const MagicTextController = ({ cardside, nodes }) => {
+const MagicTextController = ({ cardside, nodes, projectid }) => {
     const dispatch = useDispatch();
     const handleChangeCompanyImage = (id, e) => {
         const file = e.target.files[0];
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
-                dispatch(changeCompanyLogoforMagicText({ id: id, image: reader.result}));
+                //dispatch(changeCompanyLogoforMagicText({ id: id, image: reader.result}));
+                const formData = new FormData();
+                formData.append("nodeid", id);
+                formData.append("image", file);
+                dispatch(addImageToLogoText({ formData, projectid }));
                 e.target.value = null;
             }
             reader.readAsDataURL(file);
@@ -104,8 +109,12 @@ const MagicTextController = ({ cardside, nodes }) => {
                     <p>This feature is used to create text with icons or with logos or images quickly</p>
                 </div>
                 <div className={styles.textBody}>
-                    <button className={styles.textBtn} onClick={() => dispatch(addCompanylogoNode(cardside))}>Add Company Logo Width Text</button>
-                    <button className={styles.textBtn} onClick={() => dispatch(addMagicContact(cardside))}>Add Contacts</button>
+                    <button className={styles.textBtn} onClick={() => {
+                        dispatch(addLogoText({ cardside: cardside, projectid: projectid }));
+                    }}>Add Company Logo Width Text</button>
+                    <button className={styles.textBtn} onClick={() => {
+                        dispatch(addIconText({ cardside: cardside, projectid: projectid }));
+                    }}>Add Contacts</button>
                     <div style={{ maxHeight: "230px", minHeight: "230px", overflowY: "auto", overflowX: "hidden" }}>
                         {
                             nodes.map((item, index) => {
@@ -113,10 +122,16 @@ const MagicTextController = ({ cardside, nodes }) => {
                                     return (
                                         <div key={index} id={item.id}>
                                             <div className={styles.magicNodeImage}>
-                                                <img src={item.image ? item.image : placeholder} alt='logo'/>
+                                                <img src={item.image ? `${baseurl}${item.image}` : placeholder} alt='logo'/>
                                                 <input type="file" accept='image/*' title='' onChange={(e) => handleChangeCompanyImage(item.id, e)}/>
                                             </div>
-                                            <input type='text' className={styles.nodeInput} value={item.text} onChange={(e) => dispatch(changeCompanyNameforMagicText({ id: item.id, value: e.target.value }))}/>
+                                            <input type='text' className={styles.nodeInput} value={item.text} onChange={(e) => {
+                                                dispatch(changeCompanyNameforMagicText({ id: item.id, value: e.target.value }));
+                                                const formdata = new FormData();
+                                                formdata.append("nodeid", item.id);
+                                                formdata.append("text", e.target.value);
+                                                dispatch(nodeTextUpdate(formdata));
+                                            }}/>
                                         </div>
                                     )
                                 } else if (item.nodetype === 'magictext' && item.type === 'icon-text') {
@@ -132,7 +147,8 @@ const MagicTextController = ({ cardside, nodes }) => {
                                                                 iconData.map((icon, index) => {
                                                                     return (
                                                                         <li key={index} dangerouslySetInnerHTML={{ __html: icon.svg }} onClick={() => {
-                                                                            dispatch(changeIconofMagicText({ id: item.id, svg: icon.svg }))
+                                                                            dispatch(changeIconofMagicText({ id: item.id, svg: icon.svg }));
+                                                                            dispatch(changeIcon({ nodeid: item.id, svg: icon.svg }));
                                                                             setOpenId(null);
                                                                         }}></li>
                                                                     )
@@ -142,7 +158,13 @@ const MagicTextController = ({ cardside, nodes }) => {
                                                     </div>
                                                 }
                                             </div>
-                                            <input type='text' className={styles.iconText} value={item.text} onChange={(e) => dispatch(changeCompanyNameforMagicText({ id: item.id, value: e.target.value }))}/>
+                                            <input type='text' className={styles.iconText} value={item.text} onChange={(e) => {
+                                                dispatch(changeCompanyNameforMagicText({ id: item.id, value: e.target.value }));
+                                                const formdata = new FormData();
+                                                formdata.append("nodeid", item.id);
+                                                formdata.append("text", e.target.value);
+                                                dispatch(nodeTextUpdate(formdata));
+                                            }}/>
                                         </div>
                                     )
                                 }

@@ -8,15 +8,15 @@ import MagicTextController from "./MagicTextController";
 const StudioController = ({ active, cardside, projectid }) => {
     const nodes = useSelector((state) => state.node.data);
     if (active === "text") {
-        return <TextController cardside={cardside} nodes={nodes}/>
+        return <TextController cardside={cardside} nodes={nodes} projectid={projectid}/>
     } else if (active === "images") {
         return <ImageController cardside={cardside} projectid={projectid}/>
     } else if (active === "background") {
         return <BackgroundController cardside={cardside} projectid={projectid}/>
     } else if (active === "shapes") {
-        return <ShapeController cardside={cardside}/>
+        return <ShapeController cardside={cardside} projectid={projectid}/>
     } else if (active === "magictext") {
-        return <MagicTextController cardside={cardside} nodes={nodes}/>
+        return <MagicTextController cardside={cardside} nodes={nodes} projectid={projectid}/>
     }
 }
 

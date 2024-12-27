@@ -45,6 +45,227 @@ export const resizeImageNode = createAsyncThunk('data/resizeImageNode', async (f
     }
 })
 
+export const updateNodePosition = createAsyncThunk("data/updateNodePosition", async (stringVal, thunkAPI) => {
+    try {
+        await axios.post(`${baseurl}/update-node-position`, {
+            obj: stringVal
+        });
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+    }
+})
+
+export const addTextNodeToProject = createAsyncThunk("data/addTextNodeToProject", async ({ cardside, projectid }, thunkAPI) => {
+    try {
+        const res = await axios.post(`${baseurl}/save-text-node`, {
+            cardside: cardside,
+            projectid: projectid
+        });
+        console.log(res.data.data);
+        return res.data.data;
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+    }
+})
+export const nodeTextWidthUpdate = createAsyncThunk("data/", async (formdata, thunkAPI) => {
+    try {
+        await axios.post(`${baseurl}/update-node-width`, formdata, {
+            "Content-Type": 'multipart/form-data'
+        });
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+    }
+})
+export const nodeTextUpdate = createAsyncThunk("data/nodeTextUpdate", async (formData, thunkAPI) => {
+    try {
+        await axios.post(`${baseurl}/update-node-text`, formData, {
+            "Content-Type": "multipart/form-data"
+        });
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+    }
+})
+export const changeFontsize = createAsyncThunk("data/changeFontsize", async (formdata, thunkAPI) => {
+    try {
+        await axios.post(`${baseurl}/update-node-text-size`, formdata, {
+            "Content-Type": "multipart/form-data"
+        });
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+    }
+})
+
+export const changeFontFamilyToProject = createAsyncThunk("data/changeFontFamilyToProject", async (formdata, thunkAPI) => {
+    try {
+        await axios.post(`${baseurl}/update-node-text-family`, formdata, {
+            "Content-Tpye": "multipart/form-data"
+        });
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+    }
+})
+
+export const changeLetterSpacing = createAsyncThunk("data/changeLetterSpacing", async (formdata, thunkAPI) => {
+    try {
+        await axios.post(`${baseurl}/update-node-text-lspacing`, formdata, {
+            "content-Type": 'multipart/form-data'
+        });
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+    }
+})
+
+export const changeTextColor = createAsyncThunk('data/changeTextColor', async (formdata, thunkAPI) => {
+    try {
+        await axios.post(`${baseurl}/update-node-text-color`, formdata, {
+            "Content-Type": "content-type"
+        });
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+    }
+})
+export const changeFontWeight = createAsyncThunk("data/changeFontWeight", async (formdata, thunkAPI) => {
+    try {
+        await axios.post(`${baseurl}/update-node-text-fweight`, formdata, {
+            "Content-type": "multipart/form-data"
+        });
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+    }
+})
+
+export const changeFontStyle = createAsyncThunk("data/changeFontStyle", async (formdata, thunkAPI) => {
+    try {
+        await axios.post(`${baseurl}/update-node-text-fstyle`, formdata, {
+            'Content-Type': 'multipart/form-data'
+        });
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+    }
+})
+export const changeTextDecoration = createAsyncThunk("data/changeTextDecoration", async (formdata, thunkAPI) => {
+    try {
+        await axios.post(`${baseurl}/update-node-text-tdecoration`, formdata, {
+            "Content-Type": 'multipart/form-data'
+        });
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+    }
+})
+export const changeTextAlignToProject = createAsyncThunk("data/changeTextAlignToProject", async (formdata, thunkAPI) => {
+    try {
+        await axios.post(`${baseurl}/update-node-text-talign`, formdata, {
+            "Content-Type": "multipart/form-data"
+        });
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+    }
+})
+export const changeObjectFit = createAsyncThunk("data/changeObjectFit", async (formdata, thunkAPI) => {
+    try {
+        await axios.post(`${baseurl}/update-node-text-ofit`, formdata, {
+            'Content-Type': "multipart/form-data"
+        });
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+    }
+})
+export const changeBorderRadius = createAsyncThunk("data/changeBorderRadius", async (formdata, thunkAPI) => {
+    try {
+        await axios.post(`${baseurl}/update-node-text-bradius`, formdata, {
+            "content-Type": "multipart/form-data"
+        });
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+    }
+})
+export const addShapeToProject = createAsyncThunk("data/addShapeToProject", async ({ projectid, cardside, shapetype }, thunkAPI) => {
+    try {
+        const res = await axios.post(`${baseurl}/save-node-shape`, {
+            projectid,
+            cardside,
+            shapetype
+        });
+        return res.data.data;
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+    }
+})
+
+export const changeBackgroundColor = createAsyncThunk('data/changeBackgroundColor', async (formdata, thunkAPI) => {
+    try {
+        await axios.post(`${baseurl}/update-node-bgcolor`, formdata, {
+            "Content-Type": "multipart/form-data"
+        });
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+    }
+})
+
+export const changeOpacity = createAsyncThunk("data/changeOpacity", async (formdata, thunkAPI) => {
+    try {
+        await axios.post(`${baseurl}/update-node-opacity`, formdata, {
+            "Content-Type": "multipart/form-data"
+        });
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+    }
+})
+export const addLogoText = createAsyncThunk("data/addLogoText", async ({ cardside, projectid }, thunkAPI) => {
+    try {
+        const res = await axios.post(`${baseurl}/save-node-logo-text`, {
+            cardside,
+            projectid
+        });
+        return res.data.data;
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+    }
+})
+export const addImageToLogoText = createAsyncThunk("data/addImageToLogoText", async ({ formData, projectid}, thunkAPI) => {
+    try {
+        console.log(formData);
+        await axios.post(`${baseurl}/upload-node-logo-text-image`, formData, {
+            "Content-Type": "multipart/form-data"
+        });
+        thunkAPI.dispatch(fetchAllNodes(projectid));
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+    }
+})
+export const addIconText = createAsyncThunk("data/addIconText", async ({ cardside, projectid }, thunkAPI) => {
+    try {
+        const res = await axios.post(`${baseurl}/add-icon-text`, {
+            cardside,
+            projectid
+        });
+        return res.data.data;
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+    }
+})
+export const changeIcon = createAsyncThunk("data/changeIcon", async ({ nodeid, svg }, thunkAPI) => {
+    try {
+        await axios.post(`${baseurl}/update-icon-svg`, {
+            nodeid,
+            svg
+        });
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+    }
+});
+
+export const duplicateLayer = createAsyncThunk("data/duplicateLayer", async (formdata, thunkAPI) => {
+    try {
+        const res = await axios.post(`${baseurl}/clone-the-node`, formdata, {
+            "Content-Type": "multipart/form-data"
+        });
+        return res.data.data;
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+    }
+})
+
 const nodeSlice = createSlice({
     name: "node",
     initialState: {
@@ -105,8 +326,8 @@ const nodeSlice = createSlice({
             updates.forEach((update) => {
                 const node = state.data.find((node) => node.id === update.id);
                 if (node) {
-                    node.x = update.newX;
-                    node.y = update.newY;
+                    node.x = update.x;
+                    node.y = update.y;
                 }
             });
         },
@@ -191,7 +412,7 @@ const nodeSlice = createSlice({
             if (node) {
                 node.styles = {
                     ...node.styles,
-                    fweight: node.styles.fweight === 400 ? 700 : 400 
+                    fweight: node.styles.fweight === 400 ? 700 : 400
                 }
             }
         },
@@ -201,7 +422,7 @@ const nodeSlice = createSlice({
             if (node) {
                 node.styles = {
                     ...node.styles,
-                    fstyle: node.styles.fstyle === 'normal' ? 'italic' : 'normal' 
+                    fstyle: node.styles.fstyle === 'normal' ? 'italic' : 'normal'
                 }
             }
         },
@@ -427,7 +648,6 @@ const nodeSlice = createSlice({
                     bstyle: "solid",
                     bcolor: "#000000",
                     bradius: 0
-
                 },
                 text: "Your contact",
                 styles: {
@@ -526,6 +746,43 @@ const nodeSlice = createSlice({
             state.status = 'succeeded';
             state.data = action.payload;
         }).addCase(fetchAllNodes.rejected, (state, action) => {
+            state.status = 'failed';
+            state.error = action.payload;
+        }).addCase(addTextNodeToProject.pending, (state) => {
+            state.status = 'loading';
+        }).addCase(addTextNodeToProject.fulfilled, (state, action) => {
+            state.status = 'succeeded';
+            state.data.push(action.payload);
+        }).addCase(addTextNodeToProject.rejected, (state, action) => {
+            state.status = 'failed';
+            state.error = action.payload;
+        }).addCase(addShapeToProject.pending, (state) => {
+            state.status = 'loading';
+        }).addCase(addShapeToProject.fulfilled, (state, action) => {
+            state.status = 'succeeded';
+            state.data.push(action.payload);
+        }).addCase(addShapeToProject.rejected, (state, action) => {
+            state.status = "failed";
+            state.error = action.payload;
+        }).addCase(addLogoText.pending, (state) => {
+            state.status = 'loading';
+        }).addCase(addLogoText.fulfilled, (state, action) => {
+            state.status = "succeeded";
+            state.data.push(action.payload);
+        }).addCase(addLogoText.rejected, (state, action) => {
+            state.status = "failed";
+            state.error = action.payload;
+        }).addCase(addIconText.pending, (state) => {
+            state.status = 'loading';
+        }).addCase(addIconText.fulfilled, (state, action) => {
+            state.status = "succeeded";
+            state.data.push(action.payload);
+        }).addCase(duplicateLayer.pending, (state) => {
+            state.status = 'loading';
+        }).addCase(duplicateLayer.fulfilled, (state, action) => {
+            state.status = 'succeeded';
+            state.data.push(action.payload);
+        }).addCase(duplicateLayer.rejected, (state, action) => {
             state.status = 'failed';
             state.error = action.payload;
         })

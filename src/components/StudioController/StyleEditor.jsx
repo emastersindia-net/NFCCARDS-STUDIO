@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import style from './StyleEditor.module.css'
 import { useDispatch, useSelector } from 'react-redux';
-import { changeBackgroundcolorofShape, changeColor, changeFontFamily, changeTextAlign, decreaseBorderRadius, decreaseBorderRadiusofShapes, decreaseFontSize, decreaseletterSpacing, decreaseOpacityofShape, increaseBorderRadius, increaseBorderRadiusofShapes, increaseFontsize, increaseletterSpacing, increaseOpacityofShape, makeNameClose, makeNameFar, toogleBold, toogleItalic, toogleTextDecoration, updateObjectFit } from '../../utils/nodeSclice';
+import { changeBackgroundColor, changeBackgroundcolorofShape, changeBorderRadius, changeColor, changeFontFamily, changeFontFamilyToProject, changeFontsize, changeFontStyle, changeFontWeight, changeLetterSpacing, changeObjectFit, changeOpacity, changeTextAlign, changeTextAlignToProject, changeTextColor, changeTextDecoration, decreaseBorderRadius, decreaseBorderRadiusofShapes, decreaseFontSize, decreaseletterSpacing, decreaseOpacityofShape, increaseBorderRadius, increaseBorderRadiusofShapes, increaseFontsize, increaseletterSpacing, increaseOpacityofShape, makeNameClose, makeNameFar, toogleBold, toogleItalic, toogleTextDecoration, updateObjectFit } from '../../utils/nodeSclice';
 
 const fontFamilies = [
     {
@@ -59,24 +59,63 @@ const StyleEditor = ({ show = false, nodeid, editorRef }) => {
         dispatch(decreaseFontSize(nodeid));
     }
     const handleChangeColor = (value, element) => {
-        dispatch(changeColor({ id: nodeid, color: value }))
+        dispatch(changeColor({ id: nodeid, color: value }));
+        const formdata = new FormData();
+        formdata.append("nodeid", nodeid);
+        formdata.append("color", value);
+        dispatch(changeTextColor(formdata));
         element.value = null;
     }
     const handleShapeColor = (value, element) => {
         dispatch(changeBackgroundcolorofShape({ id: nodeid, value: value }));
+        const formdata = new FormData();
+        formdata.append("nodeid", nodeid);
+        formdata.append("bgcolor", value);
+        dispatch(changeBackgroundColor(formdata));
         element.value = null;
     }
     const handleToogleBold = () => {
         dispatch(toogleBold(nodeid));
+        const formdata = new FormData();
+        formdata.append("nodeid", nodeid);
+        if (nodeStyles.fweight === 400) {
+            formdata.append("fweight", 700);
+            dispatch(changeFontWeight(formdata));
+        } else {
+            formdata.append("fweight", 400);
+            dispatch(changeFontWeight(formdata));
+        }
     }
     const handleToogleItalic = () => {
         dispatch(toogleItalic(nodeid));
+        const formData = new FormData();
+        formData.append("nodeid", nodeid);
+        if (nodeStyles.fstyle === 'italic') {
+            formData.append("fstyle", 'normal');
+            dispatch(changeFontStyle(formData));
+        } else {
+            formData.append("fstyle", 'italic');
+            dispatch(changeFontStyle(formData));
+        }
     }
     const handleToogleDecoration = () => {
         dispatch(toogleTextDecoration(nodeid));
+        const formData = new FormData();
+        formData.append("nodeid", nodeid);
+        if (nodeStyles.tdecoration === 'underline') {
+            formData.append("tdecoration", "none");
+            dispatch(changeTextDecoration(formData));
+        } else {
+            formData.append("tdecoration", "underline");
+            dispatch(changeTextDecoration(formData));
+        }
     }
     const handleChangeTextAlign = (value) => {
         dispatch(changeTextAlign({ id: nodeid, value: value }));
+        const formData = new FormData();
+        formData.append("nodeid", nodeid);
+        formData.append("talign", value);
+        dispatch(changeTextAlignToProject(formData));
     }
     const handleIncreaseLetterSpacing = () => {
         dispatch(increaseletterSpacing(nodeid));
@@ -89,12 +128,19 @@ const StyleEditor = ({ show = false, nodeid, editorRef }) => {
     const handleChangeFont = (value) => {
         setSelectedFont(value);
         dispatch(changeFontFamily({ id: nodeid, value: value }));
+        const formdata = new FormData();
+        formdata.append("nodeid", nodeid);
+        formdata.append("ffamily", value);
+        dispatch(changeFontFamilyToProject(formdata));
         setShowdrp(false);
-
     }
     const handleChangeObjectFit = (value) => {
         setSelectedObjectFit(value);
         dispatch(updateObjectFit({ id: nodeid, value: value }));
+        const formData = new FormData();
+        formData.append("nodeid", nodeid);
+        formData.append("ofit", value);
+        dispatch(changeObjectFit(formData));
         setShowdrp(false);
     }
     const [query, setQuery] = useState("");
@@ -141,15 +187,39 @@ const StyleEditor = ({ show = false, nodeid, editorRef }) => {
                             </div>
                         </div>
                         <div className={style.fonsizeEditor}>
-                            <button className={style.fsizeBtn} onClick={() => handleDecreaseFontSize()}>-</button>
+                            <button className={style.fsizeBtn} onClick={() => {
+                                handleDecreaseFontSize();
+                                const fordata = new FormData();
+                                fordata.append("nodeid", nodeStyles.nodeid);
+                                fordata.append("fsize", nodeStyles.fsize - 1);
+                                dispatch(changeFontsize(fordata));
+                            }}>-</button>
                             <span className={style.fontsizeText}>{nodeStyles?.fsize}px</span>
-                            <button className={style.fsizeBtn} onClick={() => handleIncreaseFontSize()}>+</button>
+                            <button className={style.fsizeBtn} onClick={() => {
+                                handleIncreaseFontSize();
+                                const fordata = new FormData();
+                                fordata.append("nodeid", nodeStyles.nodeid);
+                                fordata.append("fsize", nodeStyles.fsize + 1);
+                                dispatch(changeFontsize(fordata));
+                            }}>+</button>
                         </div>
                         <span className={style.fontsizeText}>Letter Spacing</span>
                         <div className={style.fonsizeEditor}>
-                            <button className={style.fsizeBtn} onClick={() => handleDecreaseLetterSpacing()}>-</button>
+                            <button className={style.fsizeBtn} onClick={() => {
+                                handleDecreaseLetterSpacing();
+                                const formdata = new FormData();
+                                formdata.append("nodeid", nodeStyles.nodeid);
+                                formdata.append("lspacing", nodeStyles.lspacing - 1);
+                                dispatch(changeLetterSpacing(formdata));
+                            }}>-</button>
                             <span className={style.fontsizeText}>{nodeStyles?.lspacing}px</span>
-                            <button className={style.fsizeBtn} onClick={() => handleIncreaseLetterSpacing()}>+</button>
+                            <button className={style.fsizeBtn} onClick={() => {
+                                handleIncreaseLetterSpacing();
+                                const formdata = new FormData();
+                                formdata.append("nodeid", nodeStyles.nodeid);
+                                formdata.append("lspacing", nodeStyles.lspacing + 1);
+                                dispatch(changeLetterSpacing(formdata));
+                            }}>+</button>
                         </div>
                         <div className={style.fontColor}>
                             <input type='color' value={nodeStyles && nodeStyles.color} onChange={(e) => handleChangeColor(e.target.value, e.target)}/>
@@ -230,9 +300,21 @@ const StyleEditor = ({ show = false, nodeid, editorRef }) => {
                             </div>
                         </div>
                         <div className={style.fonsizeEditor}>
-                            <button className={style.fsizeBtn} onClick={() => dispatch(decreaseBorderRadius(nodeid))}>-</button>
+                            <button className={style.fsizeBtn} onClick={() => {
+                                dispatch(decreaseBorderRadius(nodeid));
+                                const formdata = new FormData();
+                                formdata.append("nodeid", nodeid);
+                                formdata.append("bradius", nodeStyles.bradius - 10);
+                                dispatch(changeBorderRadius(formdata));
+                            }}>-</button>
                             <span className={style.fontsizeText}>{nodeStyles?.bradius}%</span>
-                            <button className={style.fsizeBtn} onClick={() => dispatch(increaseBorderRadius(nodeid))}>+</button>
+                            <button className={style.fsizeBtn} onClick={() => {
+                                dispatch(increaseBorderRadius(nodeid));
+                                const formdata = new FormData();
+                                formdata.append("nodeid", nodeid);
+                                formdata.append("bradius", nodeStyles.bradius + 10);
+                                dispatch(changeBorderRadius(formdata));
+                            }}>+</button>
                         </div>
                     </div>
                 </div>
@@ -243,18 +325,42 @@ const StyleEditor = ({ show = false, nodeid, editorRef }) => {
                     <div className='d-flex align-items-center gap-1'>
                         <span className={style.fontsizeText}>Border Radius</span>
                         <div className={style.fonsizeEditor}>
-                            <button className={style.fsizeBtn} onClick={() => dispatch(decreaseBorderRadiusofShapes(nodeid))}>-</button>
+                            <button className={style.fsizeBtn} onClick={() => {
+                                dispatch(decreaseBorderRadiusofShapes(nodeid));
+                                const formData = new FormData();
+                                formData.append("nodeid", nodeid);
+                                formData.append("bradius", nodeStyles.bradius - 1);
+                                dispatch(changeBorderRadius(formData));
+                            }}>-</button>
                             <span className={style.fontsizeText}>{nodeStyles?.bradius}px</span>
-                            <button className={style.fsizeBtn} onClick={() => dispatch(increaseBorderRadiusofShapes(nodeid))}>+</button>
+                            <button className={style.fsizeBtn} onClick={() => {
+                                dispatch(increaseBorderRadiusofShapes(nodeid));
+                                const formData = new FormData();
+                                formData.append("nodeid", nodeid);
+                                formData.append("bradius", nodeStyles.bradius + 1);
+                                dispatch(changeBorderRadius(formData));
+                            }}>+</button>
                         </div>
                         <div className={style.fontColor}>
                             <input type='color' value={nodeStyles?.bgcolor} onChange={(e) => handleShapeColor(e.target.value, e.target)}/>
                         </div>
                         <span className={style.fontsizeText}>Opacity</span>
                         <div className={style.fonsizeEditor}>
-                            <button className={style.fsizeBtn} onClick={() => dispatch(decreaseOpacityofShape(nodeid))}>-</button>
+                            <button className={style.fsizeBtn} onClick={() => {
+                                dispatch(decreaseOpacityofShape(nodeid));
+                                const formdata = new FormData();
+                                formdata.append("nodeid", nodeid);
+                                formdata.append("opacity", nodeStyles.opacity - 10);
+                                dispatch(changeOpacity(formdata));
+                            }}>-</button>
                             <span className={style.fontsizeText}>{nodeStyles?.opacity}%</span>
-                            <button className={style.fsizeBtn} onClick={() => dispatch(increaseOpacityofShape(nodeid))}>+</button>
+                            <button className={style.fsizeBtn} onClick={() => {
+                                dispatch(increaseOpacityofShape(nodeid));
+                                const formdata = new FormData();
+                                formdata.append("nodeid", nodeid);
+                                formdata.append("opacity", nodeStyles.opacity + 10);
+                                dispatch(changeOpacity(formdata));
+                            }}>+</button>
                         </div>
                     </div>
                 </div>

@@ -247,6 +247,9 @@
     opacity: 1;
     visibility: visible;
 }
+.nodeImage, .nodeShape {
+    padding: 0px !important;
+}
 .switch {
     display: inline-flex;
     align-items: center;
@@ -306,9 +309,6 @@
     font-family: 'AdobeClean-Bold';
     letter-spacing: 1px;
     text-transform: uppercase;
-}
-.nodeImage, .nodeShape {
-    padding: 0px !important;
 }
 .imageResizer {
     width: 20px;

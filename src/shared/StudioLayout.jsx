@@ -8,9 +8,12 @@ import { fetchBackground } from "../utils/backgroundSlice";
 import Loader from "../components/loader/Loader";
 import { fetchProjectImages } from "../utils/imageSlice";
 import { fetchAllNodes } from "../utils/nodeSclice";
+import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
 const StudioLayout = ({ projectid }) => {
     const [sidebarActive, setSidebarActive] = useState('text');
+    const navigate = useNavigate();
     const handleChangeSidebarActive = (value) => {
         setSidebarActive(value);
     }
@@ -24,6 +27,7 @@ const StudioLayout = ({ projectid }) => {
     }
     const dispatch = useDispatch();
     const backgroundsLoaded = useSelector((state) => state.background.status);
+    
     useEffect(() => {
         dispatch(fetchBackground(projectid));
         dispatch(fetchProjectImages(projectid));

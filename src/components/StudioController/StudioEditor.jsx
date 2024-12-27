@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import styles from './StudioEditor.module.css'
 import React, { useEffect, useRef, useState } from 'react';
-import { deleteNode, deleteNodeFromProject, duplicateLayerBack, duplicateLayerFront, editNodeText, resizeImageNode, updateNodeDimension, updateNodePositions, updateNodeWidth } from '../../utils/nodeSclice';
+import { deleteNode, deleteNodeFromProject, duplicateLayer, duplicateLayerBack, duplicateLayerFront, editNodeText, nodeTextUpdate, nodeTextWidthUpdate, resizeImageNode, updateNodeDimension, updateNodePosition, updateNodePositions, updateNodeWidth } from '../../utils/nodeSclice';
 import StyleEditor from './StyleEditor';
 import { addEditingnodeId, removeEditingnodeId } from '../../utils/selectedNodeSlice';
 import placeholderImage from '../../assets/images/placeholder-image.jpg'
@@ -25,7 +25,7 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
                 };
             } else {
                 return {
-                    background: bg?.front?.bgimage_url ? `url(http://localhost:52495${bg?.front?.bgimage_url}?v=${Date.now()}) no-repeat 100% 100%` : undefined
+                    background: bg?.front?.bgimage_url ? `url(http://localhost:52495${bg?.front?.bgimage_url}?v=${Date.now()}) no-repeat center/cover` : undefined
                 };
             }
         } else {
@@ -39,7 +39,7 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
                 };
             } else {
                 return {
-                    background: bg?.back?.bgimage_url ? `url(http://localhost:52495${bg?.back?.bgimage_url}?v=${Date.now()}) no-repeat 100% 100%` : undefined
+                    background: bg?.back?.bgimage_url ? `url(http://localhost:52495${bg?.back?.bgimage_url}?v=${Date.now()}) no-repeat center/cover` : undefined
                 };
             }
         }
@@ -82,7 +82,7 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
         if (editingDivId) return;
         const startX = e.clientX;
         const startY = e.clientY;
-    
+
         const selectedNodeState = nodes.filter((node) =>
             selectedNodes.includes(node.id)
         );
@@ -92,7 +92,7 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
         })
 
         if (resizing) return;
-    
+        let finalJson;
         const onMouseMove = (moveEvent) => {
             const deltaX = moveEvent.clientX - startX;
             const deltaY = moveEvent.clientY - startY;
@@ -147,11 +147,13 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
                     middleLineRef.current.style.opacity = 0;
                 }
 
-                return { id: node.id, newX, newY };
+                return { id: node.id, x: newX, y: newY };
             })
+            console.log(updates);
+            finalJson = JSON.stringify(updates);
             dispatch(updateNodePositions({ updates }));
         };
-    
+
         const onMouseUp = () => {
             leftGuideLineRef.current.style.opacity = 0;
             topGuideLineRef.current.style.opacity = 0;
@@ -159,10 +161,13 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
             bottomGuideLineRef.current.style.opacity = 0;
             centerLineRef.current.style.opacity = 0;
             middleLineRef.current.style.opacity = 0;
+            if (finalJson) {
+                dispatch(updateNodePosition(finalJson));
+            }
             window.removeEventListener("mousemove", onMouseMove);
             window.removeEventListener("mouseup", onMouseUp);
         };
-    
+
         window.addEventListener("mousemove", onMouseMove);
         window.addEventListener("mouseup", onMouseUp);
     };
@@ -170,7 +175,7 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
         if (editingDivId) return;
         const startX = e.clientX;
         const startY = e.clientY;
-    
+
         const selectedNodeState = nodes.filter((node) =>
             selectedNodes.includes(node.id)
         );
@@ -180,7 +185,7 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
         })
 
         if (resizing) return;
-    
+        let finalJson;
         const onMouseMove = (moveEvent) => {
             const deltaX = moveEvent.clientX - startX;
             const deltaY = moveEvent.clientY - startY;
@@ -202,7 +207,7 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
                 topGuideLineRef.current.style.opacity = 1;
                 rightGuideLineRef.current.style.opacity = 1;
                 bottomGuideLineRef.current.style.opacity = 1;
-                
+
                 const elementCenterX = newX + eleWidth / 2;
                 const centerLineX = centerLineRef.current.offsetLeft;
 
@@ -219,23 +224,26 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
                     middleLineRef.current.style.opacity = 0;
                 }
 
-                return { id: node.id, newX, newY };
+                return { id: node.id, x: newX, y: newY };
             })
-            console.log(updates);
+            finalJson = JSON.stringify(updates);
             dispatch(updateNodePositions({ updates }));
         };
-    
+
         const onMouseUp = () => {
             leftGuideLineRef.current.style.opacity = 0;
             topGuideLineRef.current.style.opacity = 0;
             rightGuideLineRef.current.style.opacity = 0;
             bottomGuideLineRef.current.style.opacity = 0;
             centerLineRef.current.style.opacity = 0;
-            middleLineRef.current.style.opacity = 0;      
+            middleLineRef.current.style.opacity = 0;
+            if (finalJson) {
+                dispatch(updateNodePosition(finalJson));
+            }
             window.removeEventListener("mousemove", onMouseMove);
             window.removeEventListener("mouseup", onMouseUp);
         };
-    
+
         window.addEventListener("mousemove", onMouseMove);
         window.addEventListener("mouseup", onMouseUp);
     };
@@ -244,7 +252,7 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
     const handleMouseDragMagicText = (e) => {
         const startX = e.clientX;
         const startY = e.clientY;
-    
+
         const selectedNodeState = nodes.filter((node) =>
             selectedNodes.includes(node.id)
         );
@@ -254,7 +262,7 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
         })
 
         if (resizing) return;
-    
+        let finalJson;
         const onMouseMove = (moveEvent) => {
             const deltaX = moveEvent.clientX - startX;
             const deltaY = moveEvent.clientY - startY;
@@ -268,7 +276,7 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
                 topGuideLineRef.current.style.opacity = 1;
                 rightGuideLineRef.current.style.opacity = 1;
                 bottomGuideLineRef.current.style.opacity = 1;
-                
+
                 const elementCenterX = newX + eleWidth / 2;
                 const centerLineX = centerLineRef.current.offsetLeft;
                 if (Math.abs(elementCenterX - centerLineX) < 2) {
@@ -284,22 +292,26 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
                     middleLineRef.current.style.opacity = 0;
                 }
 
-                return { id: node.id, newX, newY };
+                return { id: node.id, x: newX, y: newY };
             })
+            finalJson = JSON.stringify(updates);
             dispatch(updateNodePositions({ updates }));
         };
-    
+
         const onMouseUp = () => {
             leftGuideLineRef.current.style.opacity = 0;
             topGuideLineRef.current.style.opacity = 0;
             rightGuideLineRef.current.style.opacity = 0;
             bottomGuideLineRef.current.style.opacity = 0;
             centerLineRef.current.style.opacity = 0;
-            middleLineRef.current.style.opacity = 0;      
+            middleLineRef.current.style.opacity = 0;
+            if (finalJson) {
+                dispatch(updateNodePosition(finalJson));
+            }
             window.removeEventListener("mousemove", onMouseMove);
             window.removeEventListener("mouseup", onMouseUp);
         };
-    
+
         window.addEventListener("mousemove", onMouseMove);
         window.addEventListener("mouseup", onMouseUp);
     };
@@ -341,21 +353,28 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
         e.preventDefault();
         const startX = e.clientX;
         const nodeToResize = nodes.find((node) => node.id === id);
-    
+
         const initialWidth = nodeToResize.width;
         const initialX = nodeToResize.x;
         const parentWidth = 1050;
-    
+        let mainWidth;
         const onMouseMove = (moveEvent) => {
             const deltaX = moveEvent.clientX - startX;
             const newWidth = initialWidth + deltaX;
             const maxWidth = parentWidth - initialX;
             if (newWidth > 0 && newWidth <= maxWidth) {
+                mainWidth = newWidth;
                 dispatch(updateNodeWidth({ id, width: newWidth }));
             }
         };
-    
+
         const onMouseUp = () => {
+            if (mainWidth) {
+                const formData = new FormData();
+                formData.append("nodeid", id);
+                formData.append("width", mainWidth);
+                dispatch(nodeTextWidthUpdate(formData));
+            }
             window.removeEventListener("mousemove", onMouseMove);
             window.removeEventListener("mouseup", onMouseUp);
         };
@@ -368,24 +387,24 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
         const startX = e.clientX;
         const startY = e.clientY;
         const nodetoResize = nodes.find((node) => node.id === id);
-    
+
         const initialWidth = nodetoResize.width;
         const initialHeight = nodetoResize.height;
         const initialX = nodetoResize.x;
         const initialY = nodetoResize.y;
-    
+
         const aspectRatio = initialWidth / initialHeight;
         const parentWidth = 1050;
         const parentHeight = 600;
-    
+
         let newWidth, newHeight;
 
         const onMouseMove = (moveElement) => {
             const deltaX = moveElement.clientX - startX;
             const deltaY = moveElement.clientY - startY;
-    
-            
-    
+
+
+
             if (moveElement.altKey) {
                 const delta = Math.max(deltaX, deltaY);
                 newWidth = initialWidth + delta;
@@ -394,10 +413,10 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
                 newWidth = initialWidth + deltaX;
                 newHeight = initialHeight + deltaY;
             }
-    
+
             const maxWidth = parentWidth - initialX;
             const maxHeight = parentHeight - initialY;
-    
+
             if (newWidth > 0 && newWidth <= maxWidth && newHeight > 0 && newHeight <= maxHeight) {
                 dispatch(
                     updateNodeDimension({
@@ -408,7 +427,7 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
                 );
             }
         };
-    
+
         const onMouseUp = () => {
             const formData = new FormData();
             formData.append("nodeid", id);
@@ -418,10 +437,10 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
             window.removeEventListener("mousemove", onMouseMove);
             window.removeEventListener("mouseup", onMouseUp);
         };
-    
+
         window.addEventListener("mousemove", onMouseMove);
         window.addEventListener("mouseup", onMouseUp);
-    };    
+    };
 
     const [contextMenu, setContentMenu] = useState({ visible: false, x: 0, y: 0, id: 0 });
     const handleChangeContent = (id, value) => {
@@ -440,23 +459,23 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
     const adjustScale = () => {
         const originalWidth = 1050;
         const originalHeight = 600;
-  
+
         const screenWidth = window.innerWidth;
         const screenHeight = window.innerHeight;
-        
+
         const parentWidth = editorWrapperRef.current.clientWidth || screenWidth;
 
         let scl = 1;
-  
+
         if (screenWidth < 1600 || screenHeight < 782) {
           const scaleX = parentWidth / originalWidth;
           const scaleY = screenHeight / originalHeight;
           scl = Math.min(scaleX, scaleY);
         }
-  
+
         scl = Math.min(scl, 1);
         setScale(scl);
-  
+
     }
     useEffect(() => {
         window.addEventListener("mousedown", handleClickOutside);
@@ -479,10 +498,18 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
             <div className={`${styles.contextMenuWrapper} ${contextMenu.visible ? `${styles.show}` : ''}`} style={{ top: contextMenu.y, left: contextMenu.x }} ref={contextRef}>
                     <div className={styles.contextMenu}>
                         <button className={styles.contextBtn} onClick={() => {
-                            dispatch(duplicateLayerFront(contextMenu.id));
+                            // dispatch(duplicateLayerFront(contextMenu.id));
+                            const formData = new FormData();
+                            formData.append("nodeid", contextMenu.id);
+                            formData.append("cardside", "front");
+                            dispatch(duplicateLayer(formData));
                             setContentMenu({ visible: false });
                         }}>Duplicate Layer in Front</button>
                         <button className={styles.contextBtn} onClick={() => {
+                            const formData = new FormData();
+                            formData.append("nodeid", contextMenu.id);
+                            formData.append("cardside", "back");
+                            dispatch(duplicateLayer(formData));
                             dispatch(duplicateLayerBack(contextMenu.id));
                             setContentMenu({ visible: false });
                         }}>Duplicate Layer in Back</button>
@@ -495,10 +522,10 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
                     <span className={styles.bleedText}>Bleed Area</span>
                     <div className={styles.editorSafeArea}>
                         <span className={styles.safeAreaText}>Safe Area</span>
-                        <div className={`${styles.safeAreaGuide} ${styles.left}`}></div>
+                        {/* <div className={`${styles.safeAreaGuide} ${styles.left}`}></div>
                         <div className={`${styles.safeAreaGuide} ${styles.top}`}></div>
                         <div className={`${styles.safeAreaGuide} ${styles.right}`}></div>
-                        <div className={`${styles.safeAreaGuide} ${styles.bottom}`}></div>
+                        <div className={`${styles.safeAreaGuide} ${styles.bottom}`}></div> */}
                     </div>
                     <div className={`${styles.safeAreaGuideLine} ${styles.left}`} ref={leftGuideLineRef}></div>
                     <div className={`${styles.safeAreaGuideLine} ${styles.top}`} ref={topGuideLineRef}></div>
@@ -511,8 +538,12 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
                             if (item.cardside === 'front') {
                                 if (item.nodetype === 'text') {
                                     return (
-                                        <div className={`${styles.node} ${selectedNodes.includes(item.id) ? `${styles.selected}` : ''}`} style={{ width: `${item.width}px`, minHeight: `${item.height}px`, top: `${item.y}px`, left: `${item.x}px`, zIndex: item.styles.zindex }} key={index} id={item.id} data-node={item.nodetype} onClick={(event) => handleSelectNodes(item.id, event)} onMouseDown={(e) => handleMouseDrag(e)} onDoubleClick={(e) => startEditing(item.id)} onBlur={() => stopEditing()}
-                                        onContextMenu={(e) => handleContentMenu(e, item.id)}
+                                        <div className={`${styles.node} ${selectedNodes.includes(item.id) ? `${styles.selected}` : ''}`} style={{ width: `${item.width}px`, minHeight: `${item.height}px`, top: `${item.y}px`, left: `${item.x}px`, zIndex: item.styles.zindex }} key={index} id={item.id} data-node={item.nodetype} 
+                                            onClick={(event) => handleSelectNodes(item.id, event)} 
+                                            onMouseDown={(e) => handleMouseDrag(e)} 
+                                            onDoubleClick={(e) => startEditing(item.id)} 
+                                            onBlur={() => stopEditing()}
+                                            onContextMenu={(e) => handleContentMenu(e, item.id)}
                                         >
                                             <span className={`${styles.corners} ${styles.top} ${styles.left}`}></span>
                                             <span className={`${styles.corners} ${styles.top} ${styles.right}`}></span>
@@ -521,10 +552,19 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
                                             {/* <span className={`${styles.resizer} ${styles.left}`}></span> */}
                                             <span className={`${styles.resizer} ${styles.right}`} onMouseDown={(e) => handleResizeRight(e, item.id)} ref={resizeRefs.current[item.id]}></span>
                                             <span className={`${styles.textContentEditor} ${editingDivId === item.id ? `${styles.show}` : ""}`}>
-                                                <input className={styles.textContentInput} value={item.text} onChange={(e) => handleChangeContent(item.id, e.target.value)}/>
+                                                <input className={styles.textContentInput} value={item.text} onChange={(e) => {
+                                                    handleChangeContent(item.id, e.target.value);
+                                                    const formdata = new FormData();
+                                                    formdata.append("nodeid", item.id);
+                                                    formdata.append("text", e.target.value);
+                                                    dispatch(nodeTextUpdate(formdata));
+                                                }}/>
                                             </span>
                                             <div className={styles.nodeText} style={{ width: '100%', whiteSpace: 'normal', wordWrap: 'break-word', overflowWrap: 'break-word', color: item.styles.color, fontFamily: `${item.styles.ffamily}, sans-serif`, fontSize: item.styles.fsize, fontWeight: item.styles.fweight, lineHeight: `${item.styles.lheight}px`, letterSpacing: item.styles.lspacing, fontStyle: item.styles.fstyle, textDecoration: item.styles.tdecoration, textAlign: item.styles.talign }} dangerouslySetInnerHTML={{ __html: item.text }}></div>
-                                            <button className={styles.nodeDelte} aria-label='node delete' onClick={() => handleDeleteNode(item.id)}>
+                                            <button className={styles.nodeDelte} aria-label='node delete' onClick={() => {
+                                                dispatch(deleteNode(item.id));
+                                                dispatch(deleteNodeFromProject(item.id));
+                                            }}>
                                                 <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24">
                                                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
                                                 </svg>
@@ -534,12 +574,12 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
                                 } else if (item.nodetype === 'image') {
                                     return (
                                         <div className={`${styles.node} ${styles.nodeImage} ${selectedNodes.includes(item.id) ? `${styles.selected}` : ''}`}
-                                        style={{ width: `${item.width}px`, height: `${item.height}px`, top: `${item.y}px`, left: `${item.x}px` }}
-                                        key={index} id={item.id} data-node={item.nodetype}
-                                        onClick={(event) => handleSelectNodes(item.id, event)}
-                                        onMouseDown={(e) => handleMouseDragImage(e)}
-                                        onDoubleClick={() => startEditing(item.id)} onBlur={() => stopEditing()}
-                                        onContextMenu={(e) => handleContentMenu(e, item.id)}
+                                            style={{ width: `${item.width}px`, height: `${item.height}px`, top: `${item.y}px`, left: `${item.x}px` }}
+                                            key={index} id={item.id} data-node={item.nodetype}
+                                            onClick={(event) => handleSelectNodes(item.id, event)}
+                                            onMouseDown={(e) => handleMouseDragImage(e)}
+                                            onDoubleClick={() => startEditing(item.id)} onBlur={() => stopEditing()}
+                                            onContextMenu={(e) => handleContentMenu(e, item.id)}
                                         >
                                             <span className={`${styles.corners} ${styles.top} ${styles.left}`}></span>
                                             <span className={`${styles.corners} ${styles.top} ${styles.right}`}></span>
@@ -559,19 +599,22 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
                                 } else if (item.nodetype === "shape" && item.shapetype === 'square' || item.shapetype === 'rectangle' || item.shapetype === 'circle') {
                                     return (
                                         <div className={`${styles.node} ${styles.nodeShape} ${selectedNodes.includes(item.id) ? `${styles.selected}` : ''}`}
-                                        style={{ top: `${item.y}px`, left: `${item.x}px` }}
-                                        key={index} id={item.id} data-node={item.nodetype}
-                                        onClick={(event) => handleSelectNodes(item.id, event)}
-                                        onMouseDown={(e) => handleMouseDragImage(e)}
-                                        onDoubleClick={() => startEditing(item.id)} onBlur={() => stopEditing()}
-                                        onContextMenu={(e) => handleContentMenu(e, item.id)}
+                                            style={{ top: `${item.y}px`, left: `${item.x}px` }}
+                                            key={index} id={item.id} data-node={item.nodetype}
+                                            onClick={(event) => handleSelectNodes(item.id, event)}
+                                            onMouseDown={(e) => handleMouseDragImage(e)}
+                                            onDoubleClick={() => startEditing(item.id)} onBlur={() => stopEditing()}
+                                            onContextMenu={(e) => handleContentMenu(e, item.id)}
                                         >
                                             <span className={`${styles.corners} ${styles.top} ${styles.left}`}></span>
                                             <span className={`${styles.corners} ${styles.top} ${styles.right}`}></span>
                                             <span className={`${styles.corners} ${styles.bottom} ${styles.left}`}></span>
                                             <span className={`${styles.corners} ${styles.bottom} ${styles.right} ${styles.imageResizer}`} onMouseDown={(e) => handleResizeImage(e, item.id)} ref={resizeRefs.current[item.id]}></span>
                                             <div style={{ width: `${item.width}px`, height: `${item.height}px`, top: `${item.y}px`, left: `${item.x}px`, backgroundColor: `${item.styles.bgcolor}`, borderRadius: `${item.shapetype !== 'circle' ? `${item.styles.bradius}px` : `${item.styles.bradius}%`}`, borderWidth: `${item.styles.bwidth}px`, borderStyle: item.styles.bstyle, borderColor: item.styles.bcolor, opacity: `${item.styles.opacity}%` }}></div>
-                                            <button className={styles.nodeDelte} aria-label='node delete' onClick={() => dispatch(deleteNode(item.id))}>
+                                            <button className={styles.nodeDelte} aria-label='node delete' onClick={() => {
+                                                dispatch(deleteNode(item.id));
+                                                dispatch(deleteNodeFromProject(item.id));
+                                            }}>
                                                 <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24">
                                                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
                                                 </svg>
@@ -581,24 +624,27 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
                                 } else if (item.nodetype === "magictext" && item.type === "logo-text") {
                                     return (
                                         <div className={`${styles.node} ${styles.nodeShape} ${selectedNodes.includes(item.id) ? `${styles.selected}` : ''}`}
-                                        key={index} id={item.id} data-node={item.nodetype}
-                                        style={{ top: `${item.y}px`, left: `${item.x}px` }}
-                                        onClick={(event) => handleSelectNodes(item.id, event)}
-                                        onMouseDown={(e) => handleMouseDragMagicText(e)}
-                                        onDoubleClick={() => startEditing(item.id)} onBlur={() => stopEditing()}
-                                        onContextMenu={(e) => handleContentMenu(e, item.id)}
+                                            key={index} id={item.id} data-node={item.nodetype}
+                                            style={{ top: `${item.y}px`, left: `${item.x}px` }}
+                                            onClick={(event) => handleSelectNodes(item.id, event)}
+                                            onMouseDown={(e) => handleMouseDragMagicText(e)}
+                                            onDoubleClick={() => startEditing(item.id)} onBlur={() => stopEditing()}
+                                            onContextMenu={(e) => handleContentMenu(e, item.id)}
                                         >
                                             <span className={`${styles.corners} ${styles.top} ${styles.left}`}></span>
                                             <span className={`${styles.corners} ${styles.top} ${styles.right}`}></span>
                                             <span className={`${styles.corners} ${styles.bottom} ${styles.left}`}></span>
                                             <span className={`${styles.corners} ${styles.bottom} ${styles.right}`}></span>
                                             <div style={{ display: "flex", flexDirection: `${item.textposition === "bottom-center" ? "column" : "column-reverse"}`, alignItems: 'center', justifyContent: 'center', gap: "10px" }}>
-                                                <div style={{ backgroundImage: `url(${item.image ? item.image : placeholderImage})`, backgroundRepeat: "no-repeat", backgroundSize: "100% 100%", width: `${item.width}px`, height: `${item.height}px`, position: "relative" }}>
+                                                <div style={{ backgroundImage: `url(${item.image ? `${baseurl}${item.image}` : placeholderImage})`, backgroundRepeat: "no-repeat", backgroundSize: "100% 100%", width: `${item.width}px`, height: `${item.height}px`, position: "relative" }}>
                                                     <span className={`${styles.corners} ${styles.bottom} ${styles.right} ${styles.imageResizer}`} ref={resizeRefs.current[item.id]} onMouseDown={(e) => handleResizeImage(e, item.id)}></span>
                                                 </div>
                                                 <span style={{ fontSize: `${item.styles.fsize}px`, fontFamily: `${item.styles.ffamily}, sans-serif`, fontWeight: item.styles.fweight, lineHeight: `${item.styles.lheight}px`, color: item.styles.color, letterSpacing: `${item.styles.lspacing}px`, fontStyle: item.styles.fstyle, textDecoration: item.styles.tdecoration, marginTop: `${item.styles.mtop}px`, position: "relative" }}>{item.text}</span>
                                             </div>
-                                            <button className={styles.nodeDelte} aria-label='node delete' onClick={() => dispatch(deleteNode(item.id))}>
+                                            <button className={styles.nodeDelte} aria-label='node delete' onClick={() => {
+                                                dispatch(deleteNode(item.id));
+                                                dispatch(deleteNodeFromProject(item.id));
+                                            }}>
                                                 <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24">
                                                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
                                                 </svg>
@@ -608,12 +654,12 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
                                 } else if (item.nodetype === "magictext" && item.type === "icon-text") {
                                     return (
                                         <div className={`${styles.node} ${selectedNodes.includes(item.id) ? `${styles.selected}` : ''}`}
-                                        key={index} id={item.id} data-node={item.nodetype}
-                                        style={{ top: `${item.y}px`, left: `${item.x}px`, width: `${item.width}px`, minHeight: `${item.height}px`, minWidth: '140px' }}
-                                        onClick={(event) => handleSelectNodes(item.id, event)}
-                                        onMouseDown={(e) => handleMouseDrag(e)}
-                                        onDoubleClick={() => startEditing(item.id)} onBlur={() => stopEditing()}
-                                        onContextMenu={(e) => handleContentMenu(e, item.id)}
+                                            key={index} id={item.id} data-node={item.nodetype}
+                                            style={{ top: `${item.y}px`, left: `${item.x}px`, width: `${item.width}px`, minHeight: `${item.height}px`, minWidth: '140px' }}
+                                            onClick={(event) => handleSelectNodes(item.id, event)}
+                                            onMouseDown={(e) => handleMouseDrag(e)}
+                                            onDoubleClick={() => startEditing(item.id)} onBlur={() => stopEditing()}
+                                            onContextMenu={(e) => handleContentMenu(e, item.id)}
                                         >
                                             <span className={`${styles.corners} ${styles.top} ${styles.left}`}></span>
                                             <span className={`${styles.corners} ${styles.top} ${styles.right}`}></span>
@@ -621,15 +667,24 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
                                             <span className={`${styles.corners} ${styles.bottom} ${styles.right}`}></span>
                                             <span className={`${styles.resizer} ${styles.right}`} onMouseDown={(e) => handleResizeRight(e, item.id)} ref={resizeRefs.current[item.id]}></span>
                                             <span className={`${styles.textContentEditor} ${editingDivId === item.id ? `${styles.show}` : ""}`}>
-                                                <input className={styles.textContentInput} value={item.text} onChange={(e) => handleChangeContent(item.id, e.target.value)}/>
+                                                <input className={styles.textContentInput} value={item.text} onChange={(e) => {
+                                                    handleChangeContent(item.id, e.target.value);
+                                                    const formdata = new FormData();
+                                                    formdata.append("nodeid", item.id);
+                                                    formdata.append("text", e.target.value);
+                                                    dispatch(nodeTextUpdate(formdata));
+                                                }}/>
                                             </span>
                                             <div style={{ display: 'flex', alignItems: `${item.textposition === 'right-center' ? 'center' : ''}`}}>
-                                                <i style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: `${item.icon.width}px`, height: `${item.icon.height}px` }} dangerouslySetInnerHTML={{ __html: item.icon.svg }}></i>
+                                                <i style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: `${item.icon.width}px`, height: `${item.icon.height}px`, color: item.styles.color }} dangerouslySetInnerHTML={{ __html: item.icon.svg }}></i>
                                                 <div style={{ flex: '1', paddingLeft: "10px", fontSize: `${item.styles.fsize}px`, fontFamily: `${item.styles.ffamily}, sans-serif`, fontWeight: item.styles.fweight, lineHeight: `${item.styles.lheight}px`, color: item.styles.color, letterSpacing: `${item.styles.lspacing}px`, fontStyle: item.styles.fstyle, textDecoration: item.styles.tdecoration, userSelect: "none" }}>
                                                     {item.text}
                                                 </div>
                                             </div>
-                                            <button className={styles.nodeDelte} aria-label='node delete' onClick={() => dispatch(deleteNode(item.id))}>
+                                            <button className={styles.nodeDelte} aria-label='node delete' onClick={() => {
+                                                dispatch(deleteNode(item.id));
+                                                dispatch(deleteNodeFromProject(item.id));
+                                            }}>
                                                 <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24">
                                                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
                                                 </svg>
@@ -646,10 +701,10 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
                     <span className={styles.bleedText}>Bleed Area</span>
                     <div className={styles.editorSafeArea}>
                         <span className={styles.safeAreaText}>Safe Area</span>
-                        <div className={`${styles.safeAreaGuide} ${styles.left}`}></div>
+                        {/* <div className={`${styles.safeAreaGuide} ${styles.left}`}></div>
                         <div className={`${styles.safeAreaGuide} ${styles.top}`}></div>
                         <div className={`${styles.safeAreaGuide} ${styles.right}`}></div>
-                        <div className={`${styles.safeAreaGuide} ${styles.bottom}`}></div>
+                        <div className={`${styles.safeAreaGuide} ${styles.bottom}`}></div> */}
                     </div>
                     <div className={`${styles.safeAreaGuideLine} ${styles.left}`} ref={leftGuideLineRef}></div>
                     <div className={`${styles.safeAreaGuideLine} ${styles.top}`} ref={topGuideLineRef}></div>
@@ -662,21 +717,29 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
                             if (item.cardside === 'back') {
                                 if (item.nodetype === 'text') {
                                     return (
-                                        <div className={`${styles.node} ${selectedNodes.includes(item.id) ? `${styles.selected}` : ''}`} style={{ width: `${item.width}px`, minHeight: `${item.height}px`, top: `${item.y}px`, left: `${item.x}px` }} key={index} id={item.id} data-node={item.nodetype} onClick={(event) => handleSelectNodes(item.id, event)} onMouseDown={(e) => handleMouseDrag(e)} onDoubleClick={() => startEditing(item.id)}onBlur={() => stopEditing(item.id)} onContextMenu={(e) => handleContentMenu(e, item.id)}>
+                                        <div className={`${styles.node} ${selectedNodes.includes(item.id) ? `${styles.selected}` : ''}`} style={{ width: `${item.width}px`, minHeight: `${item.height}px`, top: `${item.y}px`, left: `${item.x}px`, zIndex: item.styles.zindex }} key={index} id={item.id} data-node={item.nodetype} onClick={(event) => handleSelectNodes(item.id, event)} onMouseDown={(e) => handleMouseDrag(e)} onDoubleClick={(e) => startEditing(item.id)} onBlur={() => stopEditing()}
+                                        onContextMenu={(e) => handleContentMenu(e, item.id)}
+                                        >
                                             <span className={`${styles.corners} ${styles.top} ${styles.left}`}></span>
                                             <span className={`${styles.corners} ${styles.top} ${styles.right}`}></span>
                                             <span className={`${styles.corners} ${styles.bottom} ${styles.left}`}></span>
                                             <span className={`${styles.corners} ${styles.bottom} ${styles.right}`}></span>
                                             {/* <span className={`${styles.resizer} ${styles.left}`}></span> */}
                                             <span className={`${styles.resizer} ${styles.right}`} onMouseDown={(e) => handleResizeRight(e, item.id)} ref={resizeRefs.current[item.id]}></span>
-                                            {
-                                                editingDivId === item.id &&
-                                                <span className={styles.textContentEditor}>
-                                                    <input className={styles.textContentInput} value={item.text} onChange={(e) => handleChangeContent(item.id, e.target.value)}/>
-                                                </span>
-                                            }
+                                            <span className={`${styles.textContentEditor} ${editingDivId === item.id ? `${styles.show}` : ""}`}>
+                                                <input className={styles.textContentInput} value={item.text} onChange={(e) => {
+                                                    handleChangeContent(item.id, e.target.value);
+                                                    const formdata = new FormData();
+                                                    formdata.append("nodeid", item.id);
+                                                    formdata.append("text", e.target.value);
+                                                    dispatch(nodeTextUpdate(formdata));
+                                                }}/>
+                                            </span>
                                             <div className={styles.nodeText} style={{ width: '100%', whiteSpace: 'normal', wordWrap: 'break-word', overflowWrap: 'break-word', color: item.styles.color, fontFamily: `${item.styles.ffamily}, sans-serif`, fontSize: item.styles.fsize, fontWeight: item.styles.fweight, lineHeight: `${item.styles.lheight}px`, letterSpacing: item.styles.lspacing, fontStyle: item.styles.fstyle, textDecoration: item.styles.tdecoration, textAlign: item.styles.talign }} dangerouslySetInnerHTML={{ __html: item.text }}></div>
-                                            <button className={styles.nodeDelte} aria-label='node delete' onClick={() => handleDeleteNode(item.id)}>
+                                            <button className={styles.nodeDelte} aria-label='node delete' onClick={() => {
+                                                dispatch(deleteNode(item.id));
+                                                dispatch(deleteNodeFromProject(item.id));
+                                            }}>
                                                 <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24">
                                                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
                                                 </svg>
@@ -686,19 +749,22 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
                                 } else if (item.nodetype === 'image') {
                                     return (
                                         <div className={`${styles.node} ${styles.nodeImage} ${selectedNodes.includes(item.id) ? `${styles.selected}` : ''}`}
-                                        style={{ width: `${item.width}px`, height: `${item.height}px`, top: `${item.y}px`, left: `${item.x}px` }}
-                                        key={index} id={item.id} data-node={item.nodetype}
-                                        onClick={(event) => handleSelectNodes(item.id, event)}
-                                        onMouseDown={(e) => handleMouseDragImage(e)}
-                                        onDoubleClick={() => startEditing(item.id)} onBlur={() => stopEditing()}
-                                        onContextMenu={(e) => handleContentMenu(e, item.id)}
+                                            style={{ width: `${item.width}px`, height: `${item.height}px`, top: `${item.y}px`, left: `${item.x}px` }}
+                                            key={index} id={item.id} data-node={item.nodetype}
+                                            onClick={(event) => handleSelectNodes(item.id, event)}
+                                            onMouseDown={(e) => handleMouseDragImage(e)}
+                                            onDoubleClick={() => startEditing(item.id)} onBlur={() => stopEditing()}
+                                            onContextMenu={(e) => handleContentMenu(e, item.id)}
                                         >
                                             <span className={`${styles.corners} ${styles.top} ${styles.left}`}></span>
                                             <span className={`${styles.corners} ${styles.top} ${styles.right}`}></span>
                                             <span className={`${styles.corners} ${styles.bottom} ${styles.left}`}></span>
                                             <span className={`${styles.corners} ${styles.bottom} ${styles.right} ${styles.imageResizer}`} onMouseDown={(e) => handleResizeImage(e, item.id)} ref={resizeRefs.current[item.id]}></span>
                                             <div alt="node image" style={{ width: "100%", height: "100%", borderRadius: `${item.styles.bradius}%`, borderWidth: `${item.styles.bwidth}px`, borderStyle: item.styles.bstyle, borderColor: item.styles.bcolor, cursor: 'grab', backgroundImage: `url(${baseurl}${item.image})`, backgroundRepeat: 'no-repeat', backgroundSize: item.styles.ofit }}></div>
-                                            <button className={styles.nodeDelte} aria-label='node delete' onClick={() => dispatch(deleteNode(item.id))}>
+                                            <button className={styles.nodeDelte} aria-label='node delete' onClick={() => {
+                                                dispatch(deleteNode(item.id));
+                                                dispatch(deleteNodeFromProject(item.id));
+                                            }}>
                                                 <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24">
                                                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
                                                 </svg>
@@ -708,18 +774,22 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
                                 } else if (item.nodetype === "shape" && item.shapetype === 'square' || item.shapetype === 'rectangle') {
                                     return (
                                         <div className={`${styles.node} ${styles.nodeShape} ${selectedNodes.includes(item.id) ? `${styles.selected}` : ''}`}
-                                        style={{ width: `${item.width}px`, height: `${item.height}px`, top: `${item.y}px`, left: `${item.x}px`, backgroundColor: `${item.styles.bgcolor}`, borderRadius: `${item.styles.bradius}px`, borderWidth: `${item.styles.bwidth}px`, borderStyle: item.styles.bstyle, borderColor: item.styles.bcolor, opacity: item.styles.opacity }}
-                                        key={index} id={item.id} data-node={item.nodetype}
-                                        onClick={(event) => handleSelectNodes(item.id, event)}
-                                        onMouseDown={(e) => handleMouseDragImage(e)}
-                                        onDoubleClick={() => startEditing(item.id)} onBlur={() => stopEditing()}
-                                        onContextMenu={(e) => handleContentMenu(e, item.id)}
+                                            style={{ top: `${item.y}px`, left: `${item.x}px` }}
+                                            key={index} id={item.id} data-node={item.nodetype}
+                                            onClick={(event) => handleSelectNodes(item.id, event)}
+                                            onMouseDown={(e) => handleMouseDragImage(e)}
+                                            onDoubleClick={() => startEditing(item.id)} onBlur={() => stopEditing()}
+                                            onContextMenu={(e) => handleContentMenu(e, item.id)}
                                         >
                                             <span className={`${styles.corners} ${styles.top} ${styles.left}`}></span>
                                             <span className={`${styles.corners} ${styles.top} ${styles.right}`}></span>
                                             <span className={`${styles.corners} ${styles.bottom} ${styles.left}`}></span>
                                             <span className={`${styles.corners} ${styles.bottom} ${styles.right} ${styles.imageResizer}`} onMouseDown={(e) => handleResizeImage(e, item.id)} ref={resizeRefs.current[item.id]}></span>
-                                            <button className={styles.nodeDelte} aria-label='node delete' onClick={() => dispatch(deleteNode(item.id))}>
+                                            <div style={{ width: `${item.width}px`, height: `${item.height}px`, top: `${item.y}px`, left: `${item.x}px`, backgroundColor: `${item.styles.bgcolor}`, borderRadius: `${item.shapetype !== 'circle' ? `${item.styles.bradius}px` : `${item.styles.bradius}%`}`, borderWidth: `${item.styles.bwidth}px`, borderStyle: item.styles.bstyle, borderColor: item.styles.bcolor, opacity: `${item.styles.opacity}%` }}></div>
+                                            <button className={styles.nodeDelte} aria-label='node delete' onClick={() => {
+                                                dispatch(deleteNode(item.id));
+                                                dispatch(deleteNodeFromProject(item.id));
+                                            }}>
                                                 <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24">
                                                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
                                                 </svg>
@@ -729,24 +799,27 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
                                 } else if (item.nodetype === "magictext" && item.type === "logo-text") {
                                     return (
                                         <div className={`${styles.node} ${styles.nodeShape} ${selectedNodes.includes(item.id) ? `${styles.selected}` : ''}`}
-                                        key={index} id={item.id} data-node={item.nodetype}
-                                        style={{ top: `${item.y}px`, left: `${item.x}px` }}
-                                        onClick={(event) => handleSelectNodes(item.id, event)}
-                                        onMouseDown={(e) => handleMouseDragMagicText(e)}
-                                        onDoubleClick={() => startEditing(item.id)} onBlur={() => stopEditing()}
-                                        onContextMenu={(e) => handleContentMenu(e, item.id)}
+                                            key={index} id={item.id} data-node={item.nodetype}
+                                            style={{ top: `${item.y}px`, left: `${item.x}px` }}
+                                            onClick={(event) => handleSelectNodes(item.id, event)}
+                                            onMouseDown={(e) => handleMouseDragMagicText(e)}
+                                            onDoubleClick={() => startEditing(item.id)} onBlur={() => stopEditing()}
+                                            onContextMenu={(e) => handleContentMenu(e, item.id)}
                                         >
                                             <span className={`${styles.corners} ${styles.top} ${styles.left}`}></span>
                                             <span className={`${styles.corners} ${styles.top} ${styles.right}`}></span>
                                             <span className={`${styles.corners} ${styles.bottom} ${styles.left}`}></span>
                                             <span className={`${styles.corners} ${styles.bottom} ${styles.right}`}></span>
                                             <div style={{ display: "flex", flexDirection: `${item.textposition === "bottom-center" ? "column" : "column-reverse"}`, alignItems: 'center', justifyContent: 'center', gap: "10px" }}>
-                                                <div style={{ backgroundImage: `url(${item.image ? item.image : placeholderImage})`, backgroundRepeat: "no-repeat", backgroundSize: "100% 100%", width: `${item.width}px`, height: `${item.height}px`, position: "relative" }}>
+                                                <div style={{ backgroundImage: `url(${item.image ? `${baseurl}${item.image}` : placeholderImage})`, backgroundRepeat: "no-repeat", backgroundSize: "100% 100%", width: `${item.width}px`, height: `${item.height}px`, position: "relative" }}>
                                                     <span className={`${styles.corners} ${styles.bottom} ${styles.right} ${styles.imageResizer}`} ref={resizeRefs.current[item.id]} onMouseDown={(e) => handleResizeImage(e, item.id)}></span>
                                                 </div>
                                                 <span style={{ fontSize: `${item.styles.fsize}px`, fontFamily: `${item.styles.ffamily}, sans-serif`, fontWeight: item.styles.fweight, lineHeight: `${item.styles.lheight}px`, color: item.styles.color, letterSpacing: `${item.styles.lspacing}px`, fontStyle: item.styles.fstyle, textDecoration: item.styles.tdecoration, marginTop: `${item.styles.mtop}px`, position: "relative" }}>{item.text}</span>
                                             </div>
-                                            <button className={styles.nodeDelte} aria-label='node delete' onClick={() => dispatch(deleteNode(item.id))}>
+                                            <button className={styles.nodeDelte} aria-label='node delete' onClick={() => {
+                                                dispatch(deleteNode(item.id));
+                                                dispatch(deleteNodeFromProject(item.id));
+                                            }}>
                                                 <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24">
                                                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
                                                 </svg>
@@ -756,12 +829,12 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
                                 } else if (item.nodetype === "magictext" && item.type === "icon-text") {
                                     return (
                                         <div className={`${styles.node} ${selectedNodes.includes(item.id) ? `${styles.selected}` : ''}`}
-                                        key={index} id={item.id} data-node={item.nodetype}
-                                        style={{ top: `${item.y}px`, left: `${item.x}px`, width: `${item.width}px`, minHeight: `${item.height}px`, minWidth: '140px' }}
-                                        onClick={(event) => handleSelectNodes(item.id, event)}
-                                        onMouseDown={(e) => handleMouseDrag(e)}
-                                        onDoubleClick={() => startEditing(item.id)} onBlur={() => stopEditing()}
-                                        onContextMenu={(e) => handleContentMenu(e, item.id)}
+                                            key={index} id={item.id} data-node={item.nodetype}
+                                            style={{ top: `${item.y}px`, left: `${item.x}px`, width: `${item.width}px`, minHeight: `${item.height}px`, minWidth: '140px' }}
+                                            onClick={(event) => handleSelectNodes(item.id, event)}
+                                            onMouseDown={(e) => handleMouseDrag(e)}
+                                            onDoubleClick={() => startEditing(item.id)} onBlur={() => stopEditing()}
+                                            onContextMenu={(e) => handleContentMenu(e, item.id)}
                                         >
                                             <span className={`${styles.corners} ${styles.top} ${styles.left}`}></span>
                                             <span className={`${styles.corners} ${styles.top} ${styles.right}`}></span>
@@ -769,15 +842,24 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
                                             <span className={`${styles.corners} ${styles.bottom} ${styles.right}`}></span>
                                             <span className={`${styles.resizer} ${styles.right}`} onMouseDown={(e) => handleResizeRight(e, item.id)} ref={resizeRefs.current[item.id]}></span>
                                             <span className={`${styles.textContentEditor} ${editingDivId === item.id ? `${styles.show}` : ""}`}>
-                                                <input className={styles.textContentInput} value={item.text} onChange={(e) => handleChangeContent(item.id, e.target.value)}/>
+                                                <input className={styles.textContentInput} value={item.text} onChange={(e) => {
+                                                    handleChangeContent(item.id, e.target.value);
+                                                    const formdata = new FormData();
+                                                    formdata.append("nodeid", item.id);
+                                                    formdata.append("text", e.target.value);
+                                                    dispatch(nodeTextUpdate(formdata));
+                                                }}/>
                                             </span>
                                             <div style={{ display: 'flex', alignItems: `${item.textposition === 'right-center' ? 'center' : ''}`}}>
-                                                <i style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: `${item.icon.width}px`, height: `${item.icon.height}px` }} dangerouslySetInnerHTML={{ __html: item.icon.svg }}></i>
+                                                <i style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: `${item.icon.width}px`, height: `${item.icon.height}px`, color: item.styles.color }} dangerouslySetInnerHTML={{ __html: item.icon.svg }}></i>
                                                 <div style={{ flex: '1', paddingLeft: "10px", fontSize: `${item.styles.fsize}px`, fontFamily: `${item.styles.ffamily}, sans-serif`, fontWeight: item.styles.fweight, lineHeight: `${item.styles.lheight}px`, color: item.styles.color, letterSpacing: `${item.styles.lspacing}px`, fontStyle: item.styles.fstyle, textDecoration: item.styles.tdecoration, userSelect: "none" }}>
                                                     {item.text}
                                                 </div>
                                             </div>
-                                            <button className={styles.nodeDelte} aria-label='node delete' onClick={() => dispatch(deleteNode(item.id))}>
+                                            <button className={styles.nodeDelte} aria-label='node delete' onClick={() => {
+                                                dispatch(deleteNode(item.id));
+                                                dispatch(deleteNodeFromProject(item.id));
+                                            }}>
                                                 <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24">
                                                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
                                                 </svg>

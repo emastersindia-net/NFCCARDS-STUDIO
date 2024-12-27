@@ -1,8 +1,8 @@
 import { useDispatch } from 'react-redux'
 import styles from './ShapeController.module.css'
-import { addACircleShape, addARectangleShape, addASquareShape } from '../../utils/nodeSclice';
+import { addACircleShape, addARectangleShape, addASquareShape, addShapeToProject } from '../../utils/nodeSclice';
 
-const ShapeController = ({ cardside }) => {
+const ShapeController = ({ cardside, projectid }) => {
     const dispatch = useDispatch();
     return (
         <div className={styles.textControllerWrapper}>
@@ -14,7 +14,9 @@ const ShapeController = ({ cardside }) => {
             <div className={styles.textBody}>
                 <div className={styles.row}>
                     <div className={styles.col}>
-                        <div className={styles.shapeBox} onDoubleClick={() => dispatch(addASquareShape(cardside))}>
+                        <div className={styles.shapeBox} onDoubleClick={() => {
+                            dispatch(addShapeToProject({ cardside: cardside, projectid: projectid, shapetype: "square" }));
+                        }}>
                             <i className={styles.squareIcon}></i>
                             <span className={styles.shapeName}>Square</span>
                         </div>
@@ -26,7 +28,9 @@ const ShapeController = ({ cardside }) => {
                         </div>
                     </div> */}
                     <div className={styles.col}>
-                        <div className={styles.shapeBox} onDoubleClick={() => dispatch(addACircleShape(cardside))}>
+                        <div className={styles.shapeBox} onDoubleClick={() => {
+                            dispatch(addShapeToProject({ cardside: cardside, projectid: projectid, shapetype: "circle" }));
+                        }}>
                             <i className={styles.circleIcon}></i>
                             <span className={styles.shapeName}>Circle</span>
                         </div>
