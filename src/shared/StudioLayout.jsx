@@ -8,12 +8,10 @@ import { fetchBackground } from "../utils/backgroundSlice";
 import Loader from "../components/loader/Loader";
 import { fetchProjectImages } from "../utils/imageSlice";
 import { fetchAllNodes } from "../utils/nodeSclice";
-import { useNavigate } from "react-router-dom";
-import Cookies from "js-cookie";
+import StudioEditor2 from "../components/StudioController/StudioEditor2";
 
 const StudioLayout = ({ projectid }) => {
     const [sidebarActive, setSidebarActive] = useState('text');
-    const navigate = useNavigate();
     const handleChangeSidebarActive = (value) => {
         setSidebarActive(value);
     }
@@ -27,17 +25,17 @@ const StudioLayout = ({ projectid }) => {
     }
     const dispatch = useDispatch();
     const backgroundsLoaded = useSelector((state) => state.background.status);
-    const handleBeforeUnload = (e) => {
-        const dialogText = "Changes not saved. Are you sure you want to leave?";
-        e.returnValue = dialogText;
-        return dialogText;
-    }
+    // const handleBeforeUnload = (e) => {
+    //     const dialogText = "Changes not saved. Are you sure you want to leave?";
+    //     e.returnValue = dialogText;
+    //     return dialogText;
+    // }
     useEffect(() => {
         dispatch(fetchBackground(projectid));
         dispatch(fetchProjectImages(projectid));
         dispatch(fetchAllNodes(projectid));
-        window.addEventListener("beforeunload", handleBeforeUnload);
-        return () => { window.removeEventListener("beforeunload", handleBeforeUnload); }
+        // window.addEventListener("beforeunload", handleBeforeUnload);
+        // return () => { window.removeEventListener("beforeunload", handleBeforeUnload); }
 
     }, [])
 
@@ -56,6 +54,7 @@ const StudioLayout = ({ projectid }) => {
                 </div>
                 <div className="studio-col2">
                     <StudioEditor cardside={cardside} cardsideToogler={handleChangeBackside}/>
+                    {/* <StudioEditor2 cardside={cardside} cardsideToogler={handleChangeBackside}/> */}
                 </div>
             </div>
         </main>

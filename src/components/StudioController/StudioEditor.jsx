@@ -344,11 +344,7 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
             }
         }
     }
-    const handleDeleteNode = (id) => {
-        dispatch(deleteNode(id));
-        setEditingDivId(null);
-    }
-
+   
     const handleResizeRight = (e, id) => {
         e.preventDefault();
         const startX = e.clientX;
@@ -498,7 +494,6 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
             <div className={`${styles.contextMenuWrapper} ${contextMenu.visible ? `${styles.show}` : ''}`} style={{ top: contextMenu.y, left: contextMenu.x }} ref={contextRef}>
                     <div className={styles.contextMenu}>
                         <button className={styles.contextBtn} onClick={() => {
-                            // dispatch(duplicateLayerFront(contextMenu.id));
                             const formData = new FormData();
                             formData.append("nodeid", contextMenu.id);
                             formData.append("cardside", "front");
@@ -510,7 +505,6 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
                             formData.append("nodeid", contextMenu.id);
                             formData.append("cardside", "back");
                             dispatch(duplicateLayer(formData));
-                            dispatch(duplicateLayerBack(contextMenu.id));
                             setContentMenu({ visible: false });
                         }}>Duplicate Layer in Back</button>
                     </div>
@@ -557,6 +551,7 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
                                                     const formdata = new FormData();
                                                     formdata.append("nodeid", item.id);
                                                     formdata.append("text", e.target.value);
+                                                    //Debounce needed
                                                     dispatch(nodeTextUpdate(formdata));
                                                 }}/>
                                             </span>

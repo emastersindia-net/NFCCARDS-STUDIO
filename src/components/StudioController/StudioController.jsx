@@ -4,6 +4,7 @@ import TextController from "./TextController"
 import BackgroundController from "./BackgroundController";
 import ShapeController from "./ShapeController";
 import MagicTextController from "./MagicTextController";
+import QrcodeController from "./QrcodeController";
 
 const StudioController = ({ active, cardside, projectid }) => {
     const nodes = useSelector((state) => state.node.data);
@@ -17,6 +18,8 @@ const StudioController = ({ active, cardside, projectid }) => {
         return <ShapeController cardside={cardside} projectid={projectid}/>
     } else if (active === "magictext") {
         return <MagicTextController cardside={cardside} nodes={nodes} projectid={projectid}/>
+    } else if (active === "qrcodes") {
+        return <QrcodeController cardside={cardside} projectid={projectid}/>
     }
 }
 

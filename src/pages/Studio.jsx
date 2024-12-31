@@ -1,24 +1,38 @@
 import { useNavigate, useParams } from "react-router-dom";
 import StudioLayout from "../shared/StudioLayout";
 import { useEffect, useState } from "react";
+import Cookies from "js-cookie";
 import axios from "axios";
 import { baseurl } from "../config/apiUrl";
-axios.defaults.withCredentials = true;
+
 
 const Studio = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
+    
     useEffect(() => {
-        const fetchToken = async () => {
+        const usercookie = Cookies.get("user_token") ?? "";
+        const refreshcookie = Cookies.get("user_refresh_token") ?? "";
+        const fetchNewToken = async () => {
             try {
-               const res = await axios.post(`${baseurl}/check-token-valid`);
+                const res = await axios.post(`${baseurl}/protected-login-route`, { token: refreshcookie});
+                //console.log(res.data);
+                Cookies.set("user_token", res.data.New_Token, { expires: 1 / (24 * 60) });
+                setLoading(true);
             } catch (error) {
-                //navigate("")
-                //window.location.href = "http://localhost:52495/login.html"
+                window.location.href = "http://localhost:52495/login.html";
             }
         }
-        fetchToken();
+        if (!usercookie) {
+            if (!refreshcookie) {
+                window.location.href = "http://localhost:52495/login.html";
+            } else {
+                fetchNewToken();
+            }
+        } else {
+            setLoading(true);
+        }
     }, [])
     if (!loading) {
         return

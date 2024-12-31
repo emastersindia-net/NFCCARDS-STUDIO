@@ -259,6 +259,7 @@
 .switchText {
     font-size: 16px;
     font-family: 'AdobeClean-Bold';
+    user-select: none;
 }
 .switchContainer {
     display: inline-flex;
