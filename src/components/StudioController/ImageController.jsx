@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux'
 import styles from './ImageController.module.css'
-import { addImageNode, addImageNodeToProject } from '../../utils/nodeSclice';
+import { addImageNodeToProject } from '../../utils/nodeSclice';
 import { addImagetoProject, deleteProjectImage } from '../../utils/imageSlice';
 
 const ImageController = ({ cardside, projectid }) => {

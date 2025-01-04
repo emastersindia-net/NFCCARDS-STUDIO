@@ -1,6 +1,6 @@
 import { useDispatch } from 'react-redux'
 import styles from './ShapeController.module.css'
-import { addACircleShape, addARectangleShape, addASquareShape, addShapeToProject } from '../../utils/nodeSclice';
+import { addShapeToProject } from '../../utils/nodeSclice';
 
 const ShapeController = ({ cardside, projectid }) => {
     const dispatch = useDispatch();

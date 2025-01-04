@@ -22,6 +22,7 @@ const Studio = () => {
                 setLoading(true);
             } catch (error) {
                 window.location.href = "http://localhost:52495/login.html";
+                setLoading(true);
             }
         }
         if (!usercookie) {

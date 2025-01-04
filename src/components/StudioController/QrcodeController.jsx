@@ -1,20 +1,28 @@
 import { useState } from 'react'
 import styles from './QrcodeController.module.css'
+import { useDispatch } from 'react-redux';
+import { addQrNode } from '../../utils/nodeSclice';
 const QrcodeController = ({ cardside, projectid }) => {
     const [link, setLink] = useState("");
     const [transparentBackground, setTransparentBackground] = useState(true);
     const [backgroundColor, setBackgroundColor] = useState("#000000");
     const [color, setColor] = useState("#000000");
-    const handleAddQr = () => {
-        const newObj = {
-            projectid: projectid,
-            cardside: cardside,
-            link: link,
-            backgroundtype: transparentBackground ? "transparent" : "solid",
-            bgcolor: backgroundColor,
-            color: color
-        }
-        console.log(newObj);
+    const dispatch = useDispatch();
+    const handleAddQr = () => {  
+        const formData = new FormData();
+        formData.append("projectid", projectid);
+        formData.append("link", link);
+        formData.append("backgroundtype", transparentBackground ? "transparent" : "solid");
+        formData.append("bgcolor", backgroundColor);
+        formData.append("color", color);
+        formData.append("width", 200);
+        formData.append("height", 200);
+        formData.append("cardside", cardside);
+        dispatch(addQrNode(formData));
+        setLink("");
+        setTransparentBackground(true);
+        setBackgroundColor("#000000");
+        setColor("#000000");
     }
     return (
         <div className={styles.textControllerWrapper}>

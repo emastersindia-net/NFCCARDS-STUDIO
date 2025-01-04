@@ -266,6 +266,17 @@ export const duplicateLayer = createAsyncThunk("data/duplicateLayer", async (for
     }
 })
 
+export const addQrNode = createAsyncThunk("data/addQrNode", async (formdata, thunkAPI) => {
+    try {
+        const res = await axios.post(`${baseurl}/addqrnode`, formdata, {
+            'Content-Type': "multipart/form-data"
+        });
+        return res.data.node;
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+    }
+})
+
 const nodeSlice = createSlice({
     name: "node",
     initialState: {
@@ -274,53 +285,6 @@ const nodeSlice = createSlice({
         error: null
     },
     reducers: {
-        addNode: (state, action) => {
-            const { cardside, nodetype } = action.payload;
-            const newNode = {
-                id: Date.now(),
-                cardside: cardside,
-                nodetype: nodetype,
-                x: 50,
-                y: 50,
-                width: 200,
-                height: 44,
-                styles: {
-                    color: "#000000",
-                    ffamily: "Open Sans",
-                    fsize: 14,
-                    fweight: 400,
-                    lheight: 18,
-                    lspacing: 0,
-                    fstyle: "normal",
-                    tdecoration: 'none',
-                    talign: "left",
-                    zindex: 1
-                },
-                text: "Your Text Field"
-            };
-            state.data.push(newNode);
-        },
-        addImageNode: (state, action) => {
-            const { cardside, image, width, height } = action.payload;
-            const newNode = {
-                id: Date.now(),
-                cardside: cardside,
-                nodetype: "image",
-                x: 50,
-                y: 50,
-                width: width,
-                height: height,
-                styles: {
-                    ofit: "cover",
-                    bradius: 0,
-                    bwidth: 0,
-                    bcolor: "#000000",
-                    bstyle: "solid"
-                },
-                image: image,
-            }
-            state.data.push(newNode);
-        },
         updateNodePositions: (state, action) => {
             const { updates } = action.payload;
             updates.forEach((update) => {
@@ -483,72 +447,6 @@ const nodeSlice = createSlice({
                 }
             }
         },
-        addASquareShape: (state, action) => {
-            const cardside = action.payload;
-            const newNode = {
-                id: Date.now(),
-                cardside: cardside,
-                nodetype: "shape",
-                x: 50,
-                y: 50,
-                width: 100,
-                height: 100,
-                styles: {
-                    bradius: 0,
-                    bwidth: 0,
-                    bcolor: "#000000",
-                    bstyle: "solid",
-                    bgcolor: "#dddddd",
-                    opacity: 100
-                },
-                shapetype: "square",
-            }
-            state.data.push(newNode);
-        },
-        addARectangleShape: (state, action) => {
-            const cardside = action.payload;
-            const newNode = {
-                id: Date.now(),
-                cardside: cardside,
-                nodetype: "shape",
-                x: 50,
-                y: 50,
-                width: 300,
-                height: 100,
-                styles: {
-                    bradius: 0,
-                    bwidth: 0,
-                    bcolor: "#000000",
-                    bstyle: "solid",
-                    bgcolor: "#dddddd",
-                    opacity: 100
-                },
-                shapetype: "rectangle",
-            }
-            state.data.push(newNode);
-        },
-        addACircleShape: (state, action) => {
-            const cardside = action.payload;
-            const newNode = {
-                id: Date.now(),
-                cardside: cardside,
-                nodetype: "shape",
-                x: 50,
-                y: 50,
-                width: 100,
-                height: 100,
-                styles: {
-                    bradius: 100,
-                    bwidth: 0,
-                    bcolor: "#000000",
-                    bstyle: "solid",
-                    bgcolor: "#dddddd",
-                    opacity: 100
-                },
-                shapetype: "circle",
-            }
-            state.data.push(newNode);
-        },
         increaseBorderRadiusofShapes: (state, action) => {
             const id = action.payload;
             const node = state.data.find(item => item.id === id);
@@ -599,72 +497,6 @@ const nodeSlice = createSlice({
                 }
             }
         },
-        addCompanylogoNode: (state, action) => {
-            const cardside = action.payload;
-            const newObj = {
-                id: Date.now(),
-                cardside: cardside,
-                nodetype: "magictext",
-                x: 50,
-                y: 50,
-                width: 210,
-                height: 150,
-                image: "",
-                text: "Your Company Name",
-                styles: {
-                    fsize: 20,
-                    fweight: 700,
-                    ffamily: "Open Sans",
-                    lheight: 24,
-                    color: "#000000",
-                    lspacing: 0,
-                    fstyle: "normal",
-                    tdecoration: 'none',
-                    mtop: 0
-                },
-                textposition: "bottom-center",
-                type: "logo-text",
-            }
-            state.data.push(newObj);
-        },
-        addMagicContact: (state, action) => {
-            const cardside = action.payload;
-            const newObj = {
-                id: Date.now(),
-                cardside: cardside,
-                nodetype: "magictext",
-                x: 50,
-                y: 50,
-                width: 210,
-                height: 66,
-                icon: {
-                    svg: `<svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M7.978 4a2.553 2.553 0 0 0-1.926.877C4.233 6.7 3.699 8.751 4.153 10.814c.44 1.995 1.778 3.893 3.456 5.572 1.68 1.679 3.577 3.018 5.57 3.459 2.062.456 4.115-.073 5.94-1.885a2.556 2.556 0 0 0 .001-3.861l-1.21-1.21a2.689 2.689 0 0 0-3.802 0l-.617.618a.806.806 0 0 1-1.14 0l-1.854-1.855a.807.807 0 0 1 0-1.14l.618-.62a2.692 2.692 0 0 0 0-3.803l-1.21-1.211A2.555 2.555 0 0 0 7.978 4Z"/>
-                </svg>`,
-                    width: 45,
-                    height: 45,
-                    color: '#000000',
-                    bwidth: 0,
-                    bstyle: "solid",
-                    bcolor: "#000000",
-                    bradius: 0
-                },
-                text: "Your contact",
-                styles: {
-                    fsize: 20,
-                    fweight: 400,
-                    ffamily: "Open Sans",
-                    lheight: 24,
-                    color: "#000000",
-                    lspacing: 0,
-                    fstyle: "normal",
-                    tdecoration: 'none',
-                },
-                textposition: "right-center",
-                type: "icon-text",
-            }
-            state.data.push(newObj);
-        },
         changeCompanyLogoforMagicText: (state, action) => {
             const { id, image } = action.payload;
             const node = state.data.find(item => item.id === id);
@@ -704,30 +536,6 @@ const nodeSlice = createSlice({
             const node = state.data.find(item => item.id === id);
             if (node) {
                 node.icon.svg = svg;
-            }
-        },
-        duplicateLayerFront: (state, action) => {
-            const id = action.payload;
-            const node = state.data.find(item => item.id === id);
-            if (node) {
-                const newNode = {
-                    ...node,
-                    id: Date.now(),
-                    cardside: 'front'
-                }
-                state.push(newNode);
-            }
-        },
-        duplicateLayerBack: (state, action) => {
-            const id = action.payload;
-            const node = state.data.find(item => item.id === id);
-            if (node) {
-                const newNode = {
-                    ...node,
-                    id: Date.now(),
-                    cardside: 'back'
-                }
-                state.push(newNode);
             }
         }
     },
@@ -785,9 +593,17 @@ const nodeSlice = createSlice({
         }).addCase(duplicateLayer.rejected, (state, action) => {
             state.status = 'failed';
             state.error = action.payload;
+        }).addCase(addQrNode.pending, (state) => {
+            state.status = "loading";
+        }).addCase(addQrNode.fulfilled, (state, action) => {
+            state.status = 'succeeded';
+            state.data.push(action.payload);
+        }).addCase(addQrNode.rejected, (state, action) => {
+            state.status = 'failed';
+            state.error = action.payload;
         })
     }
 });
 
-export const { addNode, updateNodePositions, deleteNode, editNodeText, updateNodeWidth, increaseFontsize, decreaseFontSize, changeColor, toogleBold, toogleItalic, toogleTextDecoration, changeTextAlign, increaseletterSpacing, decreaseletterSpacing, changeFontFamily, addImageNode, updateNodeDimension, updateObjectFit, increaseBorderRadius, decreaseBorderRadius, addASquareShape, addARectangleShape, increaseBorderRadiusofShapes, changeBackgroundcolorofShape, increaseOpacityofShape, decreaseOpacityofShape, decreaseBorderRadiusofShapes, addACircleShape, addCompanylogoNode, changeCompanyLogoforMagicText, changeCompanyNameforMagicText, makeNameClose, makeNameFar, addMagicContact, changeIconofMagicText, duplicateLayerFront, duplicateLayerBack } = nodeSlice.actions; 
+export const { updateNodePositions, deleteNode, editNodeText, updateNodeWidth, increaseFontsize, decreaseFontSize, changeColor, toogleBold, toogleItalic, toogleTextDecoration, changeTextAlign, increaseletterSpacing, decreaseletterSpacing, changeFontFamily, updateNodeDimension, updateObjectFit, increaseBorderRadius, decreaseBorderRadius, increaseBorderRadiusofShapes, changeBackgroundcolorofShape, increaseOpacityofShape, decreaseOpacityofShape, decreaseBorderRadiusofShapes, changeCompanyLogoforMagicText, changeCompanyNameforMagicText, makeNameClose, makeNameFar, changeIconofMagicText } = nodeSlice.actions; 
 export default nodeSlice.reducer;

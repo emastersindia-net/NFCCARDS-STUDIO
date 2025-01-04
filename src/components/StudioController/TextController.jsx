@@ -1,18 +1,12 @@
 import { useDispatch, useSelector } from 'react-redux';
 import styles from './TextController.module.css'
-import { addNode, addTextNodeToProject, deleteNode, deleteNodeFromProject, editNodeText, nodeTextUpdate } from '../../utils/nodeSclice';
+import { addTextNodeToProject, deleteNode, deleteNodeFromProject, editNodeText, nodeTextUpdate } from '../../utils/nodeSclice';
 
 const TextController = ({ cardside, nodes, projectid }) => {
    const selectednode = useSelector((state) => state.selectednode);
    const dispatch = useDispatch();
    const handleAddNewTextNode = () => {
         dispatch(addTextNodeToProject({ cardside: cardside, projectid: projectid}));
-   }
-   const handleDeleteNode = (id) => {
-    dispatch(deleteNode(id))
-   }
-   const handleTextChange = (id, value) => {
-    dispatch(editNodeText({ id, value }))
    }
    return (
     <div className={styles.textControllerWrapper}>

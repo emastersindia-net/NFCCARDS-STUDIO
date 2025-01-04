@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import styles from './StudioEditor.module.css'
 import React, { useEffect, useRef, useState } from 'react';
-import { deleteNode, deleteNodeFromProject, duplicateLayer, duplicateLayerBack, duplicateLayerFront, editNodeText, nodeTextUpdate, nodeTextWidthUpdate, resizeImageNode, updateNodeDimension, updateNodePosition, updateNodePositions, updateNodeWidth } from '../../utils/nodeSclice';
+import { deleteNode, deleteNodeFromProject, duplicateLayer, editNodeText, nodeTextUpdate, nodeTextWidthUpdate, resizeImageNode, updateNodeDimension, updateNodePosition, updateNodePositions, updateNodeWidth } from '../../utils/nodeSclice';
 import StyleEditor from './StyleEditor';
 import { addEditingnodeId, removeEditingnodeId } from '../../utils/selectedNodeSlice';
 import placeholderImage from '../../assets/images/placeholder-image.jpg'

@@ -1,7 +1,7 @@
 import styles from './MagicTextController.module.css'
 import placeholder from '../../assets/images/placeholder-image.jpg'
 import { useDispatch } from 'react-redux'
-import { addCompanylogoNode, addIconText, addImageToLogoText, addLogoText, addMagicContact, changeCompanyLogoforMagicText, changeCompanyNameforMagicText, changeIcon, changeIconofMagicText, nodeTextUpdate } from '../../utils/nodeSclice'
+import { addIconText, addImageToLogoText, addLogoText, changeCompanyNameforMagicText, changeIcon, changeIconofMagicText, nodeTextUpdate } from '../../utils/nodeSclice'
 import { useState } from 'react'
 import { baseurl } from '../../config/apiUrl'
 
