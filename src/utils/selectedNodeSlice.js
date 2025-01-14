@@ -4,7 +4,7 @@ const selectedNodeSlice = createSlice({
     name: "selectednode",
     initialState: null,
     reducers: {
-        addEditingnodeId: (state, action) => {  
+        addEditingnodeId: (state, action) => {
             return state = action.payload;
         },
         removeEditingnodeId: (state) => {

@@ -117,7 +117,7 @@
 }
 .node {
     /* padding: 12px 5px; */
-    padding: 12px 0;
+    /* padding: 12px 0; */
     position: absolute;
     border: 1px solid transparent;
 }

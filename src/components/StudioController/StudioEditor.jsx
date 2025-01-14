@@ -7,7 +7,7 @@ import { addEditingnodeId, removeEditingnodeId } from '../../utils/selectedNodeS
 import placeholderImage from '../../assets/images/placeholder-image.jpg'
 import { baseurl } from '../../config/apiUrl';
 
-const StudioEditor = ({ cardside, cardsideToogler }) => {
+const StudioEditor = ({ cardside, cardsideToogler, reference }) => {
     const nodes = useSelector((state) => state.node.data);
     const background = useSelector((state) => state.background.data);
     const [selectedNodes, setSelectedNodes] = useState([]);
@@ -44,7 +44,7 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
             }
         }
     }
-    const parentRef = useRef(null);
+    // const reference = useRef(null);
     const resizeRefs = useRef({});
     const editorRef = useRef(null);
     const leftGuideLineRef = useRef(null);
@@ -149,7 +149,6 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
 
                 return { id: node.id, x: newX, y: newY };
             })
-            console.log(updates);
             finalJson = JSON.stringify(updates);
             dispatch(updateNodePositions({ updates }));
         };
@@ -318,7 +317,7 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
 
     const handleClickOutside = (e) => {
         if (!editorRef.current) {
-            if (!parentRef.current.contains(e.target)) {
+            if (!reference.current.contains(e.target)) {
                 setSelectedNodes([]);
                 setEditingDivId(null);
                 dispatch(removeEditingnodeId());
@@ -329,7 +328,7 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
                 }
             }
         } else {
-            if (!parentRef.current.contains(e.target) && !editorRef.current.contains(e.target)) {
+            if (!reference.current.contains(e.target) && !editorRef.current.contains(e.target)) {
                 setSelectedNodes([]);
                 setEditingDivId(null);
                 dispatch(removeEditingnodeId());
@@ -344,7 +343,7 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
             }
         }
     }
-   
+
     const handleResizeRight = (e, id) => {
         e.preventDefault();
         const startX = e.clientX;
@@ -421,15 +420,20 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
                         height: newHeight,
                     })
                 );
+                const formData = new FormData();
+                formData.append("nodeid", id);
+                formData.append("height", newHeight);
+                formData.append("width", newWidth);
+                dispatch(resizeImageNode(formData));
             }
         };
 
         const onMouseUp = () => {
-            const formData = new FormData();
-            formData.append("nodeid", id);
-            formData.append("height", newHeight);
-            formData.append("width", newWidth);
-            dispatch(resizeImageNode(formData));
+            // const formData = new FormData();
+            // formData.append("nodeid", id);
+            // formData.append("height", newHeight);
+            // formData.append("width", newWidth);
+            // dispatch(resizeImageNode(formData));
             window.removeEventListener("mousemove", onMouseMove);
             window.removeEventListener("mouseup", onMouseUp);
         };
@@ -512,7 +516,7 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
             <div>
             {
                 cardside === 'front' ?
-                <div className={styles.editorArea} id={styles.editorAreaFront} ref={parentRef} style={{ ...backgroundStyles('front', background?.front?.type, background), transform: `scale(${scale})`}}>
+                <div className={styles.editorArea} id={styles.editorAreaFront} ref={reference} style={{ ...backgroundStyles('front', background?.front?.type, background), transform: `scale(${scale})`}}>
                     <span className={styles.bleedText}>Bleed Area</span>
                     <div className={styles.editorSafeArea}>
                         <span className={styles.safeAreaText}>Safe Area</span>
@@ -532,10 +536,10 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
                             if (item.cardside === 'front') {
                                 if (item.nodetype === 'text') {
                                     return (
-                                        <div className={`${styles.node} ${selectedNodes.includes(item.id) ? `${styles.selected}` : ''}`} style={{ width: `${item.width}px`, minHeight: `${item.height}px`, top: `${item.y}px`, left: `${item.x}px`, zIndex: item.styles.zindex }} key={index} id={item.id} data-node={item.nodetype} 
-                                            onClick={(event) => handleSelectNodes(item.id, event)} 
-                                            onMouseDown={(e) => handleMouseDrag(e)} 
-                                            onDoubleClick={(e) => startEditing(item.id)} 
+                                        <div className={`${styles.node} ${selectedNodes.includes(item.id) ? `${styles.selected}` : ''}`} style={{ width: `${item.width}px`, minHeight: `${item.height}px`, top: `${item.y}px`, left: `${item.x}px` }} key={index} id={item.id} data-node={item.nodetype}
+                                            onClick={(event) => handleSelectNodes(item.id, event)}
+                                            onMouseDown={(e) => handleMouseDrag(e)}
+                                            onDoubleClick={(e) => startEditing(item.id)}
                                             onBlur={() => stopEditing()}
                                             onContextMenu={(e) => handleContentMenu(e, item.id)}
                                         >
@@ -555,7 +559,7 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
                                                     dispatch(nodeTextUpdate(formdata));
                                                 }}/>
                                             </span>
-                                            <div className={styles.nodeText} style={{ width: '100%', whiteSpace: 'normal', wordWrap: 'break-word', overflowWrap: 'break-word', color: item.styles.color, fontFamily: `${item.styles.ffamily}, sans-serif`, fontSize: item.styles.fsize, fontWeight: item.styles.fweight, lineHeight: `${item.styles.lheight}px`, letterSpacing: item.styles.lspacing, fontStyle: item.styles.fstyle, textDecoration: item.styles.tdecoration, textAlign: item.styles.talign }} dangerouslySetInnerHTML={{ __html: item.text }}></div>
+                                            <div className={styles.nodeText} style={{ width: '100%', whiteSpace: 'normal', wordWrap: 'break-word', overflowWrap: 'break-word', color: item.styles.color, fontFamily: `${item.styles.ffamily}, sans-serif`, fontSize: `${item.styles.fsize}px`, fontWeight: item.styles.fweight, lineHeight: `${item.styles.lheight}px`, letterSpacing: item.styles.lspacing, fontStyle: item.styles.fstyle, textDecoration: item.styles.tdecoration, textAlign: item.styles.talign }} dangerouslySetInnerHTML={{ __html: item.text }}></div>
                                             <button className={styles.nodeDelte} aria-label='node delete' onClick={() => {
                                                 dispatch(deleteNode(item.id));
                                                 dispatch(deleteNodeFromProject(item.id));
@@ -692,7 +696,7 @@ const StudioEditor = ({ cardside, cardsideToogler }) => {
                     }
                 </div>
                 :
-                <div className={styles.editorArea} id={styles.editorAreaBack} ref={parentRef} style={{ ...backgroundStyles('back', background?.back?.type, background), transform: `scale(${scale})`}}>
+                <div className={styles.editorArea} id={styles.editorAreaBack} ref={reference} style={{ ...backgroundStyles('back', background?.back?.type, background), transform: `scale(${scale})`}}>
                     <span className={styles.bleedText}>Bleed Area</span>
                     <div className={styles.editorSafeArea}>
                         <span className={styles.safeAreaText}>Safe Area</span>

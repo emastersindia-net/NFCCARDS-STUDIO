@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import StudioHeader from "../components/StudioHeader/StudioHeader"
 import StudioSidebar from "../components/StudioSidebar/StudioSidebar";
 import StudioController from "../components/StudioController/StudioController";
@@ -24,6 +24,9 @@ const StudioLayout = ({ projectid }) => {
         }
     }
     const dispatch = useDispatch();
+
+    const parentRef = useRef(null);
+
     const backgroundsLoaded = useSelector((state) => state.background.status);
     const handleBeforeUnload = (e) => {
         const dialogText = "Changes not saved. Are you sure you want to leave?";
@@ -35,8 +38,8 @@ const StudioLayout = ({ projectid }) => {
         dispatch(fetchProjectImages(projectid));
         dispatch(fetchAllNodes(projectid));
         
-        window.addEventListener("beforeunload", handleBeforeUnload);
-        return () => { window.removeEventListener("beforeunload", handleBeforeUnload); }
+        // window.addEventListener("beforeunload", handleBeforeUnload);
+        // return () => { window.removeEventListener("beforeunload", handleBeforeUnload); }
 
     }, [projectid])
 
@@ -49,7 +52,7 @@ const StudioLayout = ({ projectid }) => {
         <Helmet>
             <title>{projectid}</title>
         </Helmet>
-        <StudioHeader projectid={projectid}/>
+        <StudioHeader projectid={projectid} parentRefer={parentRef}/>
         <StudioSidebar value={sidebarActive} onChange={handleChangeSidebarActive}/>
         <main id="studio-main">
             <div className="studio-row">
@@ -57,7 +60,7 @@ const StudioLayout = ({ projectid }) => {
                     <StudioController active={sidebarActive} cardside={cardside} projectid={projectid}/>
                 </div>
                 <div className="studio-col2">
-                    <StudioEditor cardside={cardside} cardsideToogler={handleChangeBackside}/>
+                    <StudioEditor cardside={cardside} cardsideToogler={handleChangeBackside} reference={parentRef}/>
                 </div>
             </div>
         </main>

@@ -61,7 +61,6 @@ export const addTextNodeToProject = createAsyncThunk("data/addTextNodeToProject"
             cardside: cardside,
             projectid: projectid
         });
-        console.log(res.data.data);
         return res.data.data;
     } catch (error) {
         return thunkAPI.rejectWithValue(error.message);
@@ -320,9 +319,10 @@ const nodeSlice = createSlice({
             }
         },
         increaseFontsize: (state, action) => {
-            const id = action.payload;
+            const { id, height } = action.payload;
             const node = state.data.find((item) => item.id === id);
             if (node) {
+                node.height = height,
                 node.styles = {
                     ...node.styles,
                     fsize: node.styles.fsize < 90 ? node.styles.fsize + 1 : 90,
@@ -341,9 +341,10 @@ const nodeSlice = createSlice({
             }
         },
         decreaseFontSize: (state, action) => {
-            const id = action.payload;        
+            const { id, height } = action.payload;       
             const node = state.data.find((item) => item.id === id);
             if (node) {
+                node.height = height,
                 node.styles = {
                     ...node.styles,
                     fsize: node.styles.fsize > 14 ? node.styles.fsize - 1 : 14 

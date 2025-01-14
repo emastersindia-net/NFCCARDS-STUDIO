@@ -9,6 +9,14 @@ const ImageController = ({ cardside, projectid }) => {
     const handleUploadImage = (event) => {
         const file = event.target.files[0];
         if (file) {
+
+            const isWebp = file.name.toLowerCase().endsWith('.webp');
+            if (isWebp) {
+                alert("Webp format is not supported");
+                event.target.value = null;
+                return;
+            }
+
             const reader = new FileReader();
             reader.onload = (e) => {
                 const img = new Image();

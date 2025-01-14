@@ -50,13 +50,14 @@ const objectFits = [
 
 const StyleEditor = ({ show = false, nodeid, editorRef }) => {
     const node = useSelector((state) => state.node.data.find(item => item.id === nodeid));
+    const selectedNode = useSelector((state) => state.selectednode);
     const nodeStyles = node?.styles || null;
     const dispatch = useDispatch();
     const handleIncreaseFontSize = () => {
-        dispatch(increaseFontsize(nodeid));
+        dispatch(increaseFontsize({ id: nodeid, height: document.getElementById(nodeid).getBoundingClientRect().height }));
     }
     const handleDecreaseFontSize = () => {
-        dispatch(decreaseFontSize(nodeid));
+        dispatch(decreaseFontSize({ id: nodeid, height: document.getElementById(nodeid).getBoundingClientRect().height }));
     }
     const handleChangeColor = (value, element) => {
         dispatch(changeColor({ id: nodeid, color: value }));
