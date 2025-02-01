@@ -97,7 +97,7 @@ export const changeFontsize = createAsyncThunk("data/changeFontsize", async (for
 export const changeFontFamilyToProject = createAsyncThunk("data/changeFontFamilyToProject", async (formdata, thunkAPI) => {
     try {
         await axios.post(`${baseurl}/update-node-text-family`, formdata, {
-            "Content-Tpye": "multipart/form-data"
+            "Content-Type": "multipart/form-data"
         });
     } catch (error) {
         return thunkAPI.rejectWithValue(error.message);
@@ -126,7 +126,7 @@ export const changeTextColor = createAsyncThunk('data/changeTextColor', async (f
 export const changeFontWeight = createAsyncThunk("data/changeFontWeight", async (formdata, thunkAPI) => {
     try {
         await axios.post(`${baseurl}/update-node-text-fweight`, formdata, {
-            "Content-type": "multipart/form-data"
+            "Content-Type": "multipart/form-data"
         });
     } catch (error) {
         return thunkAPI.rejectWithValue(error.message);
@@ -221,9 +221,8 @@ export const addLogoText = createAsyncThunk("data/addLogoText", async ({ cardsid
         return thunkAPI.rejectWithValue(error.message);
     }
 })
-export const addImageToLogoText = createAsyncThunk("data/addImageToLogoText", async ({ formData, projectid}, thunkAPI) => {
+export const addImageToLogoText = createAsyncThunk("data/addImageToLogoText", async ({ formData, projectid }, thunkAPI) => {
     try {
-        console.log(formData);
         await axios.post(`${baseurl}/upload-node-logo-text-image`, formData, {
             "Content-Type": "multipart/form-data"
         });
@@ -243,11 +242,16 @@ export const addIconText = createAsyncThunk("data/addIconText", async ({ cardsid
         return thunkAPI.rejectWithValue(error.message);
     }
 })
-export const changeIcon = createAsyncThunk("data/changeIcon", async ({ nodeid, svg }, thunkAPI) => {
+export const changeIcon = createAsyncThunk("data/changeIcon", async ({ nodeid, svg, paths, viewbox, fill, type, pathfill }, thunkAPI) => {
     try {
         await axios.post(`${baseurl}/update-icon-svg`, {
             nodeid,
-            svg
+            svg,
+            paths: JSON.parse(paths),
+            viewbox,
+            fill,
+            type,
+            pathfill
         });
     } catch (error) {
         return thunkAPI.rejectWithValue(error.message);
@@ -357,7 +361,7 @@ const nodeSlice = createSlice({
             if (node) {
                 node.styles = {
                     ...node.styles,
-                    lspacing: node.styles.lspacing > -1 ? node.styles.lspacing - 1 : -1 ,
+                    lspacing: node.styles.lspacing > -1 ? node.styles.lspacing - 1 : -1,
                 }
             }
         },
@@ -533,10 +537,15 @@ const nodeSlice = createSlice({
             }
         },
         changeIconofMagicText: (state, action) => {
-            const { id, svg } = action.payload;
+            const { id, svg, paths, viewbox, fill, type, pathfill } = action.payload;
             const node = state.data.find(item => item.id === id);
             if (node) {
                 node.icon.svg = svg;
+                node.icon.paths = paths;
+                node.icon.viewbox = viewbox;
+                node.icon.fill = fill;
+                node.icon.type = type;
+                node.icon.pathfill = pathfill;
             }
         }
     },

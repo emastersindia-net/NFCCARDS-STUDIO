@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import styles from './ImageController.module.css'
 import { addImageNodeToProject } from '../../utils/nodeSclice';
 import { addImagetoProject, deleteProjectImage } from '../../utils/imageSlice';
+import { baseurl } from '../../config/apiUrl';
 
 const ImageController = ({ cardside, projectid }) => {
     const dispatch = useDispatch();
@@ -11,11 +12,54 @@ const ImageController = ({ cardside, projectid }) => {
         if (file) {
 
             const isWebp = file.name.toLowerCase().endsWith('.webp');
-            if (isWebp) {
-                alert("Webp format is not supported");
+            const isSvg = file.name.toLowerCase().endsWith(".svg");
+            if (isWebp || isSvg) {
+                alert("File format is not supported");
                 event.target.value = null;
                 return;
             }
+
+            // if (isSvg) {
+                
+            //     const reader = new FileReader();
+            //     reader.readAsText(file);
+            //     reader.onload = () => {
+            //         try {
+            //             const parser = new DOMParser();
+            //             const svgDoc = parser.parseFromString(reader.result, "image/svg+xml");
+            //             const svgElement = svgDoc.querySelector("svg");
+
+            //             const viewBox = svgElement.getAttribute("viewBox") || null;
+            //             const fill = svgElement.getAttribute("fill") || "";
+            //             const pathFill = fill !== "none";
+
+            //             const paths = Array.from(svgElement.querySelectorAll("path")).map(path => ({
+            //                 d: path.getAttribute("d") || null,
+            //                 strokelinecap: path.getAttribute("stroke-linecap") || null,
+            //                 strokelinejoin: path.getAttribute("stroke-linejoin") || null,
+            //                 strokewidth: path.getAttribute("stroke-width") || null,
+            //                 stroke: path.getAttribute("stroke") || null,
+            //                 pathfill: path.getAttribute("fill") || null,
+            //                 pathfillrule: path.getAttribute("fill-rule") || null,
+            //                 pathcliprule: path.getAttribute("clip-rule") || null,
+            //                 opacity: path.getAttribute("opacity") || null
+            //             }));
+
+            //             const svgData = {
+            //                 paths,
+            //                 viewbox: viewBox,
+            //                 fill: fill,
+            //                 pathfill: pathFill
+            //             };
+
+            //             console.log(svgData);
+
+            //         } catch (error) {
+            //             console.log(error);
+            //         }
+            //     }
+
+            // }
 
             const reader = new FileReader();
             reader.onload = (e) => {
@@ -76,7 +120,7 @@ const ImageController = ({ cardside, projectid }) => {
                                     formData.append("cardside", cardside);
                                     dispatch(addImageNodeToProject(formData));
                                 }}>
-                                    <img src={`http://localhost:52495${item.image}`} alt="image node"/>
+                                    <img src={`${baseurl}${item.image}`} alt="image node"/>
                                     <button className={styles.delBtn} onClick={() => {
                                         dispatch(deleteProjectImage({ imageid: item.id, projectid: projectid }));
                                     }} aria-labelledby='del node'>

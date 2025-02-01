@@ -7,7 +7,6 @@ export const addImagetoProject = createAsyncThunk('data/addImagetoProject', asyn
         const res = await axios.post(`${baseurl}/upload-gallery-image`, formdata, {
             "Content-Type": 'multipart/form-data'
         });
-        console.log(res.data.gallery.gallery);
         return res.data.gallery.gallery;
     } catch (error) {
         return thunkAPI.rejectWithValue(error.message);
@@ -30,7 +29,6 @@ export const deleteProjectImage = createAsyncThunk('data/delteProjectImage', asy
         await axios.post(`${baseurl}/delete-gallery`, {
             id: imageid
         });
-        console.log(projectid);
         thunkAPI.dispatch(fetchProjectImages(projectid));
     } catch (error) {
         return thunkAPI.rejectWithValue(error.message);

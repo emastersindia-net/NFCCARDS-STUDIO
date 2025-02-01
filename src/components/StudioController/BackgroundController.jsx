@@ -28,7 +28,6 @@ const BackgroundController = ({ cardside, projectid }) => {
             const res = await axios.post(`${baseurl}/update-color-code`, formData, {
                 "Content-Type": 'multipart/form-data'
             });
-            console.log(res.data);
         } catch (error) {
             console.log(error.message);
         }
@@ -42,7 +41,6 @@ const BackgroundController = ({ cardside, projectid }) => {
             const res = await axios.post(`${baseurl}/update-color-spread`, formData, {
                 "Content-Type": 'multipart/form-data'
             });
-            console.log(res.data);
         } catch (error) {
             console.log(error.message);
         }
@@ -56,7 +54,6 @@ const BackgroundController = ({ cardside, projectid }) => {
             const res = await axios.post(`${baseurl}/update-bg-type`, formdata, {
                 'Content-Type': 'multipart/form-data'
             });
-            console.log(res);
         } catch (error) {
             console.log(error.message);
         }
@@ -68,7 +65,6 @@ const BackgroundController = ({ cardside, projectid }) => {
             const res = await axios.post(`${baseurl}/delete-color`, formdata, {
                 'Content-Type': 'multipart/form-data'
             });
-            console.log(res);
         } catch (error) {
             console.log(error.message);
         }
@@ -82,7 +78,6 @@ const BackgroundController = ({ cardside, projectid }) => {
             const res = await axios.post(`${baseurl}/update-bg-color`, formdata, {
                 "Content-Type": "multipart/form-data"
             });
-            console.log(res);
         } catch (error) {
             console.log(error.message);
         }

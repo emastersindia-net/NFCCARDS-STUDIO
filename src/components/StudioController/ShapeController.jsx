@@ -21,12 +21,6 @@ const ShapeController = ({ cardside, projectid }) => {
                             <span className={styles.shapeName}>Square</span>
                         </div>
                     </div>
-                    {/* <div className={styles.col}>
-                        <div className={styles.shapeBox} onDoubleClick={() => dispatch(addARectangleShape(cardside))}>
-                            <i className={styles.recIcon}></i>
-                            <span className={styles.shapeName}>Rectangle</span>
-                        </div>
-                    </div> */}
                     <div className={styles.col}>
                         <div className={styles.shapeBox} onDoubleClick={() => {
                             dispatch(addShapeToProject({ cardside: cardside, projectid: projectid, shapetype: "circle" }));

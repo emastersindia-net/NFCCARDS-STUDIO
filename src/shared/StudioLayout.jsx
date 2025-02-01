@@ -28,18 +28,11 @@ const StudioLayout = ({ projectid }) => {
     const parentRef = useRef(null);
 
     const backgroundsLoaded = useSelector((state) => state.background.status);
-    const handleBeforeUnload = (e) => {
-        const dialogText = "Changes not saved. Are you sure you want to leave?";
-        e.returnValue = dialogText;
-        return dialogText;
-    }
+
     useEffect(() => {
         dispatch(fetchBackground(projectid));
         dispatch(fetchProjectImages(projectid));
         dispatch(fetchAllNodes(projectid));
-        
-        // window.addEventListener("beforeunload", handleBeforeUnload);
-        // return () => { window.removeEventListener("beforeunload", handleBeforeUnload); }
 
     }, [projectid])
 

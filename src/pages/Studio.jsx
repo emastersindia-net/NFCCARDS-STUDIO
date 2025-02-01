@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import StudioLayout from "../shared/StudioLayout";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
@@ -8,7 +8,6 @@ import { baseurl } from "../config/apiUrl";
 
 const Studio = () => {
     const { id } = useParams();
-    const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     
     useEffect(() => {
@@ -17,7 +16,6 @@ const Studio = () => {
         const fetchNewToken = async () => {
             try {
                 const res = await axios.post(`${baseurl}/protected-login-route`, { token: refreshcookie});
-                //console.log(res.data);
                 Cookies.set("user_token", res.data.New_Token, { expires: 1 / (24 * 60) });
                 setLoading(true);
             } catch (error) {

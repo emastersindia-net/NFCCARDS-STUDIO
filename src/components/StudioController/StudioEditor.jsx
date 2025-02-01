@@ -555,7 +555,6 @@ const StudioEditor = ({ cardside, cardsideToogler, reference }) => {
                                                     const formdata = new FormData();
                                                     formdata.append("nodeid", item.id);
                                                     formdata.append("text", e.target.value);
-                                                    //Debounce needed
                                                     dispatch(nodeTextUpdate(formdata));
                                                 }}/>
                                             </span>

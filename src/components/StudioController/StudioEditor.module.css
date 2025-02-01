@@ -49,6 +49,7 @@
     left: 0;
     color: #42b883;
     user-select: none;
+    z-index: 100;
 }
 .safeAreaText::before {
     content: "";
@@ -117,9 +118,10 @@
 }
 .node {
     /* padding: 12px 5px; */
-    /* padding: 12px 0; */
+    padding: 12px 0;
     position: absolute;
     border: 1px solid transparent;
+    min-height: auto !important;
 }
 .nodeText {
     user-select: none;
@@ -249,6 +251,7 @@
 }
 .nodeImage, .nodeShape {
     padding: 0px !important;
+    border: none !important;
 }
 .switch {
     display: inline-flex;

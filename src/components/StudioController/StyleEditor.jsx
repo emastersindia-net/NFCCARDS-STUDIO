@@ -20,18 +20,18 @@ const fontFamilies = [
         title: "Roboto",
         ffamily: "Roboto"
     },
-    {
-        title: "Didact Gothic",
-        ffamily: "Didact Gothic"
-    },
-    {
-        title: "Source Code (Pro)",
-        ffamily: "Source Code Pro"
-    },
-    {
-        title: "Sour Gummy",
-        ffamily: "Sour Gummy"
-    },
+    // {
+    //     title: "Didact Gothic",
+    //     ffamily: "Didact Gothic"
+    // },
+    // {
+    //     title: "Source Code (Pro)",
+    //     ffamily: "Source Code Pro"
+    // },
+    // {
+    //     title: "Sour Gummy",
+    //     ffamily: "Sour Gummy"
+    // },
     {
         title: "Italianno",
         ffamily: "Italianno"
@@ -50,7 +50,6 @@ const objectFits = [
 
 const StyleEditor = ({ show = false, nodeid, editorRef }) => {
     const node = useSelector((state) => state.node.data.find(item => item.id === nodeid));
-    const selectedNode = useSelector((state) => state.selectednode);
     const nodeStyles = node?.styles || null;
     const dispatch = useDispatch();
     const handleIncreaseFontSize = () => {
